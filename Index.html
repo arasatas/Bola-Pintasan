@@ -1,834 +1,809 @@
 <!doctype html>
-<!-- Meta Charset dan viewport -->
-Bola Pintasan Interaktif Aras Atas
-<style>
-  /* Gaya bola pintasan dengan efek 3D */
-  .floating-ball {
-      position: fixed;
-      bottom: 50px;
-      right: 50px;
-      width: 70px;
-      height: 70px;
-      background-color: rgba(50, 50, 50, 0.8);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      cursor: pointer;
-      z-index: 9999;
-      font-size: 20px;
-      font-weight: bold;
-      user-select: none;
-      transition: transform 0.5s ease-out;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-      transform: perspective(500px) rotateX(5deg) rotateY(5deg);
-  }
-  /* Gaya menu (bola) */
-  .floating-menu {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.2s, transform 0.2s ease-in-out;
-      text-align: center;
-      font-size: 10px;
-      color: #000;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-      transform: perspective(500px) rotateX(3deg) rotateY(3deg);
-  }
-  /* Gaya gambar pada bola/menu */
-  .floating-ball img,
-  .floating-menu img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-  }
-  /* Form Login */
-  .floating-login-form {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-      padding: 40px;
-      border-radius: 15px;
-      display: none;
-      z-index: 10002;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      transition: all 0.3s ease-in-out;
-      color: #fff;
-      position: relative;
-  }
-  @media (max-width: 600px) {
-      .floating-login-form { max-width: 320px; padding: 30px; }
-  }
-  /* Form Registrasi */
-  .floating-registration-form {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-      padding: 30px;
-      border-radius: 15px;
-      display: none;
-      z-index: 10005;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      transition: all 0.3s ease-in-out;
-      color: #fff;
-      position: relative;
-  }
-  @media (max-width: 600px) {
-      .floating-registration-form { max-width: 320px; padding: 20px; }
-  }
-  /* Header Form */
-  .floating-login-form h2,
-  .floating-registration-form h2 {
-      font-size: 26px;
-      text-align: center;
-      margin-bottom: 25px;
-      font-weight: bold;
-  }
-  /* Input Fields */
-  .floating-login-form input,
-  .floating-registration-form input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      font-size: 16px;
-      background-color: #fff;
-      color: #333;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-      transition: border 0.3s;
-  }
-  .floating-login-form input:focus,
-  .floating-registration-form input:focus {
-      outline: none;
-      border-color: #74ebd5;
-  }
-  /* Container Nama */
-  .name-container {
-      display: flex;
-      gap: 10px;
-  }
-  .name-container input { width: 50%; margin: 10px 0; }
-  /* Password Container */
-  .password-container { position: relative; }
-  .password-container .toggle-password {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 16px;
-      color: #333;
-  }
-  /* Tombol */
-  .floating-login-form button,
-  .floating-registration-form button {
-      width: 100%;
-      padding: 14px;
-      background-color: #ff6f61;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  }
-  .floating-login-form button:hover,
-  .floating-registration-form button:hover { background-color: #ff4a3d; }
-  /* Tombol Close */
-  .floating-login-form .close-login,
-  .floating-registration-form .close-registration {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      width: 30px;
-      height: 30px;
-      background-color: red;
-      color: white;
-      border-radius: 50%;
-      font-size: 18px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      font-weight: bold;
-  }
-  /* Tombol Beralih */
-  .switch-to-registration {
-      margin-top: 10px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 14px;
-      text-decoration: underline;
-  }
-  /* Loading Indicator */
-  .loading-indicator {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid #fff;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-      display: none;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  /* Popup Modal, Kamus, Notifikasi (tetap sama) */
-  .floating-popup-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 10001;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-  }
-  .floating-popup-content {
-      position: relative;
-      width: 90%;
-      height: 96%;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-  }
-  .floating-popup-inner { flex: 1; overflow-y: auto; }
-  #openExternal {
-      display: none;
-      padding: 10px 20px;
-      background: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      margin: 10px auto;
-      cursor: pointer;
-  }
-  .floating-close-popup {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-  }
-  /* Teks Menu pada Icon */
-  .floating-menu a {
-      position: relative;
-      display: block;
-      width: 100%;
-      height: 100%;
-  }
-  .floating-menu a .menu-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 10px;
-      font-weight: bold;
-      pointer-events: none;
-  }
-  /* Popup Kamus Ilmiah */
-  #kamusPopup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 10003;
-      display: none;
-      align-items: center;
-      justify-content: center;
-  }
-  #kamusContent {
-      position: relative;
-      width: 80%;
-      max-width: 500px;
-      background: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-  #kamusContent h3 { margin-top: 0; text-align: center; }
-  #kamusContent input[type="text"] {
-      width: calc(100% - 20px);
-      padding: 8px 10px;
-      margin: 10px auto;
-      display: block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-  }
-  #kamusContent button {
-      display: block;
-      margin: 10px auto;
-      padding: 10px 20px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-  }
-  #kamusContent button:hover { background: #0056b3; }
-  #kamusResult {
-      margin-top: 15px;
-      max-height: 300px;
-      overflow-y: auto;
-      padding: 10px;
-      border-top: 1px solid #ccc;
-      font-size: 14px;
-      line-height: 1.4;
-  }
-  #kamusSource {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #555;
-      text-align: right;
-  }
-  /* Popup Notifikasi Awal */
-  .floating-notification {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      z-index: 10003;
-      max-width: 400px;
-      width: 90%;
-  }
-  .floating-notification h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-      text-align: center;
-      color: #fff;
-  }
-  .floating-notification p {
-      font-size: 16px;
-      margin-bottom: 20px;
-      text-align: center;
-      color: #fff;
-  }
-  .floating-notification .close-notification {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 20px;
-      color: #fff;
-      cursor: pointer;
-  }
-  .floating-notification button {
-      display: block;
-      margin: 0 auto;
-      padding: 10px 20px;
-      background-color: #ff6f61;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-  }
-  .floating-notification button:hover { background-color: #ff4a3d; }
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bola Pintasan Interaktif Aras Atas</title>
+    <style>
+      /* Gaya bola pintasan dengan efek 3D */
+      .floating-ball {
+          position: fixed;
+          bottom: 50px;
+          right: 50px;
+          width: 70px;
+          height: 70px;
+          background-color: rgba(50, 50, 50, 0.8);
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          cursor: pointer;
+          z-index: 9999;
+          font-size: 20px;
+          font-weight: bold;
+          user-select: none;
+          transition: transform 0.5s ease-out;
+          box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+          transform: perspective(500px) rotateX(5deg) rotateY(5deg);
+      }
+      /* Gaya menu bola (dinamis) */
+      .floating-menu {
+          position: absolute;
+          width: 50px;
+          height: 50px;
+          background-color: rgba(255, 255, 255, 0.9);
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: opacity 0.2s, transform 0.2s ease-in-out;
+          text-align: center;
+          font-size: 10px;
+          color: #000;
+          box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+          transform: perspective(500px) rotateX(3deg) rotateY(3deg);
+      }
+      .floating-menu a {
+          position: relative;
+          display: block;
+          width: 100%;
+          height: 100%;
+          text-decoration: none;
+      }
+      .floating-menu a .menu-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 10px;
+          font-weight: bold;
+          pointer-events: none;
+      }
+      .floating-menu img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+      }
+      /* Form Login */
+      .floating-login-form {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+          padding: 40px;
+          border-radius: 15px;
+          display: none;
+          z-index: 10002;
+          max-width: 400px;
+          width: 90%;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          transition: all 0.3s ease-in-out;
+          color: #fff;
+          position: relative;
+      }
+      @media (max-width: 600px) {
+          .floating-login-form { max-width: 320px; padding: 30px; }
+      }
+      /* Form Registrasi */
+      .floating-registration-form {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+          padding: 30px;
+          border-radius: 15px;
+          display: none;
+          z-index: 10005;
+          max-width: 500px;
+          width: 90%;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          transition: all 0.3s ease-in-out;
+          color: #fff;
+          position: relative;
+      }
+      @media (max-width: 600px) {
+          .floating-registration-form { max-width: 320px; padding: 20px; }
+      }
+      /* Popup Profil */
+      #profilePopup {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.5);
+          z-index: 10004;
+          display: none;
+          align-items: center;
+          justify-content: center;
+      }
+      #profilePopup .floating-popup-content {
+          position: relative;
+          width: 90%;
+          max-width: 400px;
+          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+          border-radius: 15px;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+          padding: 20px;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          color: #fff;
+      }
+      #profilePopup #profileContainer {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+          position: relative;
+      }
+      #profilePopup #profilePhoto {
+          flex: 0 0 80px;
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-right: 20px;
+      }
+      #profilePopup #profilePhoto img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+      #profilePopup #profileInfo {
+          flex: 1;
+      }
+      #profilePopup #profileInfo div {
+          margin: 3px 0;
+      }
+      #profilePopup #profilePassword {
+          display: flex;
+          align-items: center;
+      }
+      #profilePopup #profilePassword span {
+          margin-right: 10px;
+      }
+      #profilePopup #togglePassword {
+          cursor: pointer;
+          margin-left: 10px;
+      }
+      #profilePopup #editProfile {
+          position: absolute;
+          top: 0;
+          right: 0;
+          cursor: pointer;
+      }
+      #profilePopup #editProfile img {
+          width: 24px;
+          height: 24px;
+      }
+      #profilePopup #profileStatus {
+          margin-top: 10px;
+      }
+      #profilePopup #statusInput {
+          width: 100%;
+          height: 60px;
+          border-radius: 8px;
+          padding: 10px;
+          border: 1px solid transparent;
+          transition: border 0.3s;
+      }
+      #profilePopup #statusInput:focus {
+          outline: none;
+          border-color: #74ebd5;
+      }
+      #profilePopup #postStatus {
+          margin-top: 10px;
+          width: 100%;
+          padding: 10px;
+          background-color: #ff6f61;
+          border: none;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+      #profilePopup #postStatus:hover {
+          background-color: #ff4a3d;
+      }
+      /* Input Fields (Login & Registrasi) */
+      .floating-login-form input,
+      .floating-registration-form input {
+          width: 100%;
+          padding: 12px;
+          margin: 10px 0;
+          border: 1px solid transparent;
+          border-radius: 8px;
+          font-size: 16px;
+          background-color: #fff;
+          color: #333;
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+          transition: border 0.3s;
+      }
+      .floating-login-form input:focus,
+      .floating-registration-form input:focus {
+          outline: none;
+          border-color: #74ebd5;
+      }
+      .name-container { display: flex; gap: 10px; }
+      .name-container input { width: 50%; margin: 10px 0; }
+      .password-container { position: relative; }
+      .password-container .toggle-password {
+          position: absolute;
+          top: 50%;
+          right: 10px;
+          transform: translateY(-50%);
+          cursor: pointer;
+          font-size: 16px;
+          color: #333;
+      }
+      .floating-login-form button,
+      .floating-registration-form button {
+          width: 100%;
+          padding: 14px;
+          background-color: #ff6f61;
+          color: #fff;
+          border: none;
+          border-radius: 8px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+      .floating-login-form button:hover,
+      .floating-registration-form button:hover { background-color: #ff4a3d; }
+      .floating-login-form .close-login,
+      .floating-registration-form .close-registration {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          width: 30px;
+          height: 30px;
+          background-color: red;
+          color: white;
+          border-radius: 50%;
+          font-size: 18px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          font-weight: bold;
+      }
+      .switch-to-registration {
+          margin-top: 10px;
+          text-align: center;
+          cursor: pointer;
+          font-size: 14px;
+          text-decoration: underline;
+      }
+      .loading-indicator {
+          border: 4px solid rgba(255, 255, 255, 0.3);
+          border-top: 4px solid #fff;
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          animation: spin 1s linear infinite;
+          margin: 10px auto;
+          display: none;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .floating-popup-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.5);
+          z-index: 10001;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      .floating-popup-content {
+          position: relative;
+          width: 90%;
+          height: 96%;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          display: flex;
+          flex-direction: column;
+      }
+      .floating-popup-inner { flex: 1; overflow-y: auto; }
+      #openExternal {
+          display: none;
+          padding: 10px 20px;
+          background: #28a745;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          margin: 10px auto;
+          cursor: pointer;
+      }
+      .floating-close-popup {
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          font-size: 24px;
+          font-weight: bold;
+          cursor: pointer;
+      }
+      .floating-menu a {
+          position: relative;
+          display: block;
+          width: 100%;
+          height: 100%;
+          text-decoration: none;
+      }
+      .floating-menu a .menu-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 10px;
+          font-weight: bold;
+          pointer-events: none;
+      }
+      #kamusPopup {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.5);
+          z-index: 10003;
+          display: none;
+          align-items: center;
+          justify-content: center;
+      }
+      #kamusContent {
+          position: relative;
+          width: 80%;
+          max-width: 500px;
+          background: #fff;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      #kamusContent h3 { margin-top: 0; text-align: center; }
+      #kamusContent input[type="text"] {
+          width: calc(100% - 20px);
+          padding: 8px 10px;
+          margin: 10px auto;
+          display: block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+      }
+      #kamusContent button {
+          display: block;
+          margin: 10px auto;
+          padding: 10px 20px;
+          background: #007bff;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+      #kamusContent button:hover { background: #0056b3; }
+      #kamusResult {
+          margin-top: 15px;
+          max-height: 300px;
+          overflow-y: auto;
+          padding: 10px;
+          border-top: 1px solid #ccc;
+          font-size: 14px;
+          line-height: 1.4;
+      }
+      #kamusSource {
+          margin-top: 10px;
+          font-size: 12px;
+          color: #555;
+          text-align: right;
+      }
+      .floating-notification {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+          padding: 30px;
+          border-radius: 15px;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+          z-index: 10003;
+          max-width: 400px;
+          width: 90%;
+      }
+      .floating-notification h2 {
+          font-size: 24px;
+          margin-bottom: 10px;
+          text-align: center;
+          color: #fff;
+      }
+      .floating-notification p {
+          font-size: 16px;
+          margin-bottom: 20px;
+          text-align: center;
+          color: #fff;
+      }
+      .floating-notification .close-notification {
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          font-size: 20px;
+          color: #fff;
+          cursor: pointer;
+      }
+      .floating-notification button {
+          display: block;
+          margin: 0 auto;
+          padding: 10px 20px;
+          background-color: #ff6f61;
+          border: none;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 16px;
+          cursor: pointer;
+      }
+      .floating-notification button:hover { background-color: #ff4a3d; }
+    </style>
+  </head>
+  <body>
+    <div id="floatingBall" class="floating-ball">+</div>
 
-  /* Gaya Container Profil yang baru */
-  .floating-profile-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 10002;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-  }
-  .floating-profile-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 400px;
-      position: relative;
-  }
-  .floating-close-profile {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-  }
-  .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-  }
-  .profile-header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-  }
-  .profile-info h2 {
-      margin: 0;
-      font-size: 20px;
-  }
-  .profile-info p {
-      margin: 0;
-      font-size: 14px;
-      color: #555;
-  }
-  .profile-info .password-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-  }
-  .profile-status textarea {
-      width: 100%;
-      height: 60px;
-      padding: 10px;
-      font-size: 14px;
-      resize: none;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-  }
-  .profile-status button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      background: #ff6f61;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-  }
-</style>
-
-<div id="floatingBall" class="floating-ball">+</div>
-
-<div id="notificationPopup" class="floating-notification" style="display: none;">
-  <span class="close-notification" id="closeNotification">&times;</span>
-  <h2>Selamat Datang Di Aras Atas</h2>
-  <p>Blog Aras Atas adalah platform literasi dan diskusi interaktif untuk generasi muda Indonesia. Bola Pintasan Interaktif memudahkan akses ke berbagai menu dan fitur inovatif.</p>
-  <button id="notificationLoginBtn">Login</button>
-</div>
-
-<div id="loginForm" class="floating-login-form">
-  <span class="close-login" id="closeLoginForm">X</span>
-  <h2>Login</h2>
-  <input type="email" id="loginEmail" placeholder="Email" required />
-  <div class="password-container">
-    <input type="password" id="loginPassword" placeholder="Password" required />
-    <span class="toggle-password" data-target="loginPassword">o</span>
-  </div>
-  <button id="loginButton">Login</button>
-  <div id="loginLoading" class="loading-indicator"></div>
-  <div class="switch-to-registration" id="switchToReg">Belum punya akun? Registrasi</div>
-</div>
-
-<div id="registrationForm" class="floating-registration-form">
-  <span class="close-registration" id="closeRegistrationForm">X</span>
-  <h2>Registrasi</h2>
-  <div class="name-container">
-    <input type="text" id="regFirstName" placeholder="Nama Depan" required />
-    <input type="text" id="regLastName" placeholder="Nama Belakang" required />
-  </div>
-  <input type="email" id="regEmail" placeholder="Email" required />
-  <div class="password-container">
-    <input type="password" id="regPassword" placeholder="Password" required />
-    <span class="toggle-password" data-target="regPassword">o</span>
-  </div>
-  <div class="password-container">
-    <input type="password" id="regConfirmPassword" placeholder="Verifikasi Password" required />
-    <span class="toggle-password" data-target="regConfirmPassword">o</span>
-  </div>
-  <input type="file" id="regUserPhoto" accept="image/*" />
-  <small style="color:#fff; display:block; text-align:center;">Maksimal 500kb</small>
-  <button id="registerButton">Registrasi</button>
-  <div id="registerLoading" class="loading-indicator"></div>
-</div>
-
-<div id="popupModal" class="floating-popup-modal" style="display: none;">
-  <div class="floating-popup-content">
-    <span class="floating-close-popup" id="closePopup">&times;</span>
-    <div class="floating-popup-inner" id="popupInner">
-      <iframe id="popupIframe" src="" frameborder="0" style="width:100%; height:100%;"></iframe>
+    <div id="notificationPopup" class="floating-notification" style="display: none;">
+      <span class="close-notification" id="closeNotification">&times;</span>
+      <h2>Selamat Datang Di Aras Atas</h2>
+      <p>Blog Aras Atas adalah platform literasi dan diskusi interaktif untuk generasi muda Indonesia. Bola Pintasan Interaktif memudahkan akses ke berbagai menu dan fitur inovatif.</p>
+      <button id="notificationLoginBtn">Login</button>
     </div>
-    <button id="openExternal">Buka Link Eksternal</button>
-  </div>
-</div>
 
-<div id="kamusPopup">
-  <div id="kamusContent">
-    <span class="floating-close-popup" id="closeKamusPopup" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:24px;">&times;</span>
-    <h3>Kamus Ilmiah</h3>
-    <input type="text" id="kataCari" placeholder="Masukkan kata yang ingin dicari definisinya" />
-    <button id="cariKata">Cari</button>
-    <div id="kamusResult"></div>
-    <div id="kamusSource"></div>
-  </div>
-</div>
+    <div id="loginForm" class="floating-login-form">
+      <span class="close-login" id="closeLoginForm">X</span>
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <div class="password-container">
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <span class="toggle-password" data-target="loginPassword">o</span>
+      </div>
+      <button id="loginButton">Login</button>
+      <div id="loginLoading" class="loading-indicator"></div>
+      <div class="switch-to-registration" id="switchToReg">Belum punya akun? Registrasi</div>
+    </div>
 
-<!-- Container Profil -->
-<div id="profileContainer" class="floating-profile-modal" style="display: none;">
-  <div class="floating-profile-content">
-    <span class="floating-close-profile" id="closeProfile">&times;</span>
-    <div class="profile-header">
-      <img id="profilePhoto" src="" alt="Profile Photo">
-      <div class="profile-info">
-        <h2 id="profileName"></h2>
-        <p id="profileEmail"></p>
-        <div class="password-row">
-          <p id="profilePassword" data-visible="false">******</p>
-          <span id="toggleProfilePassword" style="cursor:pointer;">o</span>
+    <div id="registrationForm" class="floating-registration-form">
+      <span class="close-registration" id="closeRegistrationForm">X</span>
+      <h2>Registrasi</h2>
+      <div class="name-container">
+        <input type="text" id="regFirstName" placeholder="Nama Depan" required />
+        <input type="text" id="regLastName" placeholder="Nama Belakang" required />
+      </div>
+      <input type="email" id="regEmail" placeholder="Email" required />
+      <div class="password-container">
+        <input type="password" id="regPassword" placeholder="Password" required />
+        <span class="toggle-password" data-target="regPassword">o</span>
+      </div>
+      <div class="password-container">
+        <input type="password" id="regConfirmPassword" placeholder="Verifikasi Password" required />
+        <span class="toggle-password" data-target="regConfirmPassword">o</span>
+      </div>
+      <input type="file" id="regUserPhoto" accept="image/*" />
+      <small style="color:#fff; display:block; text-align:center;">Maksimal 500kb</small>
+      <button id="registerButton">Registrasi</button>
+      <div id="registerLoading" class="loading-indicator"></div>
+    </div>
+
+    <div id="popupModal" class="floating-popup-modal" style="display: none;">
+      <div class="floating-popup-content">
+        <span class="floating-close-popup" id="closePopup">&times;</span>
+        <div class="floating-popup-inner" id="popupInner">
+          <iframe id="popupIframe" src="" frameborder="0" style="width:100%; height:100%;"></iframe>
+        </div>
+        <button id="openExternal">Buka Link Eksternal</button>
+      </div>
+    </div>
+
+    <div id="profilePopup" class="floating-popup-modal" style="display: none;">
+      <div class="floating-popup-content">
+        <span class="floating-close-popup" id="closeProfilePopup">&times;</span>
+        <div id="profileContainer">
+          <div id="profilePhoto"></div>
+          <div id="profileInfo">
+            <div id="profileName"></div>
+            <div id="profileEmail"></div>
+            <div id="profilePassword">
+              <span id="passwordText"></span>
+              <span id="togglePassword" style="cursor: pointer; margin-left: 10px;">o</span>
+            </div>
+            <div id="editProfile" style="position: absolute; top: 0; right: 0; cursor: pointer;">
+              <img src="https://img.icons8.com/material-rounded/24/ffffff/pencil.png" alt="Edit">
+            </div>
+          </div>
+        </div>
+        <div id="profileStatus">
+          <textarea id="statusInput" placeholder="Tulis status quotes..." style="width:100%; height:60px; border-radius:8px; padding:10px; border: 1px solid transparent; transition: border 0.3s;"></textarea>
+          <button id="postStatus" style="margin-top:10px; width:100%; padding:10px; background-color:#ff6f61; border:none; border-radius:8px; color:#fff; font-size:16px; cursor:pointer;">Posting</button>
         </div>
       </div>
     </div>
-    <div class="profile-status">
-       <textarea id="profileStatusInput" placeholder="Tulis status quotes..."></textarea>
-       <button id="postStatusButton">Posting</button>
-    </div>
-  </div>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, browserLocalPersistence, setPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAC4bxcSRsj866cYfpyGyStg4-71Mfg7iQ",
-  authDomain: "forum-aras-atas.firebaseapp.com",
-  databaseURL: "https://forum-aras-atas-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "forum-aras-atas",
-  storageBucket: "forum-aras-atas.firebasestorage.app",
-  messagingSenderId: "646009716521",
-  appId: "1:646009716521:web:a39976d16b4292a9ad0138",
-  measurementId: "G-PR5HGGZ7PL"
-};
-
-  const fbApp = initializeApp(firebaseConfig);
-  const auth = getAuth(fbApp);
-  setPersistence(auth, browserLocalPersistence).catch(error => { console.error("Persistence error:", error); });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const ball = document.getElementById("floatingBall");
-    const loginForm = document.getElementById("loginForm");
-    const registrationForm = document.getElementById("registrationForm");
-    const closeLoginForm = document.getElementById("closeLoginForm");
-    const closeRegistrationForm = document.getElementById("closeRegistrationForm");
-    const loginButton = document.getElementById("loginButton");
-    const registerButton = document.getElementById("registerButton");
-    const switchToReg = document.getElementById("switchToReg");
-
-    const loginEmailInput = document.getElementById("loginEmail");
-    const loginPasswordInput = document.getElementById("loginPassword");
-
-    const regFirstNameInput = document.getElementById("regFirstName");
-    const regLastNameInput = document.getElementById("regLastName");
-    const regEmailInput = document.getElementById("regEmail");
-    const regPasswordInput = document.getElementById("regPassword");
-    const regConfirmPasswordInput = document.getElementById("regConfirmPassword");
-    const regUserPhotoInput = document.getElementById("regUserPhoto");
-
-    const toggleIcons = document.querySelectorAll(".toggle-password");
-
-    const popupInner = document.getElementById("popupInner");
-    const openExternalBtn = document.getElementById("openExternal");
-    const notificationPopup = document.getElementById("notificationPopup");
-    const closeNotification = document.getElementById("closeNotification");
-    const notificationLoginBtn = document.getElementById("notificationLoginBtn");
-
-    const loginLoading = document.getElementById("loginLoading");
-    const registerLoading = document.getElementById("registerLoading");
-
-    let isDragging = false, offsetX, offsetY, menuVisible = false;
-    let menuElements = [];
-    let rotationTimer = null;
-    let rotationOffset = 0;
-
-    function validateEmail(email) {
-      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return pattern.test(email);
-    }
-    function validatePassword(password) {
-      const pattern = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
-      return pattern.test(password);
-    }
-    function showError(inputElem, message) {
-      inputElem.style.border = "2px solid red";
-      console.log(message);
-    }
-    function clearError(inputElem) {
-      inputElem.style.border = "1px solid transparent";
-    }
-
-    toggleIcons.forEach(icon => {
-      icon.addEventListener("click", function() {
-        const targetId = this.dataset.target;
-        togglePassword(targetId, this);
-      });
-    });
-    function togglePassword(targetId, icon) {
-      const input = document.getElementById(targetId);
-      if (input.type === "password") {
-        input.type = "text";
-        icon.textContent = "x";
-      } else {
-        input.type = "password";
-        icon.textContent = "o";
+    <script>
+      // Fungsi penyimpanan dan pemuatan data menggunakan localStorage
+      function saveUserData(data) {
+        localStorage.setItem("user_data", JSON.stringify(data));
       }
-    }
-
-    // Update Ball: jika data Firebase lengkap maka foto tampil dan otomatis login,
-    // jika tidak, fallback dari localStorage
-    function updateBall(user) {
-      if (user && user.displayName && user.photoURL) {
-        const firstName = user.displayName.split(" ")[0];
-        localStorage.setItem("firstName", firstName);
-        localStorage.setItem("userEmail", user.email);
-        localStorage.setItem("userPhoto", user.photoURL);
-        ball.innerHTML = `<img src="${user.photoURL}" alt="Profile" style="width:100%; height:100%; border-radius:50%; border: 3px solid rgba(0,255,0,0.3);">`;
-      } else {
-        updateBallFromLocalStorage();
-        const imgElem = ball.querySelector("img");
-        if (imgElem) { imgElem.style.border = "3px solid rgba(0,0,255,0.3)"; }
-        else { ball.style.border = "3px solid rgba(0,0,255,0.3)"; }
+      function loadUserData() {
+        const data = localStorage.getItem("user_data");
+        return data ? JSON.parse(data) : null;
       }
-      ball.dataset.loggedIn = "true";
-      console.log("updateBall:", {displayName: user.displayName, photo: user.photoURL});
-    }
-    function updateBallFromLocalStorage() {
-      const firstName = localStorage.getItem("firstName") || "";
-      const photoURL = localStorage.getItem("userPhoto") || "";
-      if (photoURL) {
-        ball.innerHTML = `<img src="${photoURL}" alt="Profile" style="width:100%; height:100%; border-radius:50%; border: 3px solid rgba(0,0,255,0.3);">`;
-      } else {
-        ball.innerHTML = firstName ? `<div style="border: 3px solid rgba(0,0,255,0.3); border-radius:50%; padding:10px;">${firstName}</div>` : "+";
-      }
-      ball.dataset.loggedIn = firstName ? "true" : "false";
-    }
 
-    onAuthStateChanged(auth, user => {
-      if (user) { console.log("User terdeteksi:", user); updateBall(user); }
-      else {
-        console.log("Tidak ada user login");
-        localStorage.removeItem("firstName");
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("userPhoto");
-        ball.innerHTML = "+";
-        ball.dataset.loggedIn = "false";
-        ball.style.border = "";
-      }
-    });
+      // Elemen UI
+      const ball = document.getElementById("floatingBall");
+      const loginForm = document.getElementById("loginForm");
+      const registrationForm = document.getElementById("registrationForm");
+      const closeLoginForm = document.getElementById("closeLoginForm");
+      const closeRegistrationForm = document.getElementById("closeRegistrationForm");
+      const loginButton = document.getElementById("loginButton");
+      const registerButton = document.getElementById("registerButton");
+      const switchToReg = document.getElementById("switchToReg");
 
-    function updatePosition(x, y) {
-      ball.style.left = `${x}px`;
-      ball.style.top = `${y}px`;
-    }
-    function onMouseMove(e) {
-      if (!isDragging) return;
-      const x = e.clientX - offsetX;
-      const y = e.clientY - offsetY;
-      updatePosition(x, y);
-    }
-    function onTouchMove(e) {
-      if (!isDragging) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const x = touch.clientX - offsetX;
-      const y = touch.clientY - offsetY;
-      updatePosition(x, y);
-    }
-    ball.addEventListener("mousedown", (e) => {
-      isDragging = true;
-      offsetX = e.clientX - ball.getBoundingClientRect().left;
-      offsetY = e.clientY - ball.getBoundingClientRect().top;
-      document.addEventListener("mousemove", onMouseMove);
-      if (ball.dataset.loggedIn === "true" && menuVisible) startRotation();
-    });
-    ball.addEventListener("touchstart", (e) => {
-      isDragging = true;
-      const touch = e.touches[0];
-      offsetX = touch.clientX - ball.getBoundingClientRect().left;
-      offsetY = touch.clientY - ball.getBoundingClientRect().top;
-      document.addEventListener("touchmove", onTouchMove, { passive: false });
-      if (ball.dataset.loggedIn === "true" && menuVisible) startRotation();
-    });
-    document.addEventListener("mouseup", () => {
-      isDragging = false;
-      stopRotation();
-    });
-    document.addEventListener("touchend", () => {
-      isDragging = false;
-      stopRotation();
-    });
-    ball.addEventListener("click", () => {
-      if (ball.dataset.loggedIn === "true") {
-        if (!menuVisible) { createMenu(); } else { removeMenu(); }
-        menuVisible = !menuVisible;
-      } else {
-        notificationPopup.style.display = "block";
-      }
-    });
-    closeNotification.addEventListener("click", () => { notificationPopup.style.display = "none"; });
-    notificationLoginBtn.addEventListener("click", () => {
-      notificationPopup.style.display = "none";
-      loginForm.style.display = "block";
-    });
-    switchToReg.addEventListener("click", () => {
-      loginForm.style.display = "none";
-      registrationForm.style.display = "block";
-    });
+      const loginEmailInput = document.getElementById("loginEmail");
+      const loginPasswordInput = document.getElementById("loginPassword");
 
-    // Bola-Bola Menu Interaktif
-    function createMenu() {
-      removeMenu();
-      const menuSize = 50;
-      const halfMenuSize = menuSize / 2;
-      const menuItems = [
-        { url: "/", icon: "https://img.icons8.com/?size=100&id=4WzzlhYcikZ8&format=png&color=000000", name: "Home" },
-        { url: "profile", icon: "https://img.icons8.com/?size=100&id=iqSCJ5UwsKH-&format=png&color=000000", name: "Profile" },
-        { url: "https://www.arasatas.com/", icon: "https://img.icons8.com/?size=100&id=112158&format=png&color=000000", name: "About" },
-        { url: "#", icon: "https://img.icons8.com/?size=100&id=91103&format=png&color=000000", name: "Logout" },
-        { url: "https://www.arasatas.com/p/live-diskusi-aras-atas.html", icon: "https://img.icons8.com/?size=100&id=S6ym80WwHadr&format=png&color=000000", name: "Chatting" },
-        { url: "https://www.arasatas.com/p/aras-atas-generator-quotes.html", icon: "https://img.icons8.com/?size=100&id=LVB8kCgWT95b&format=png&color=000000", name: "Quotes" },
-        { url: "https://www.arasatas.com/2025/03/alat-membuat-infografis-gratis.html", icon: "https://img.icons8.com/?size=100&id=124197&format=png&color=000000", name: "Infografis" },
-        { url: "/", icon: "https://img.icons8.com/?size=100&id=113848&format=png&color=000000", name: "Tools" },
-        { url: "kamus", icon: "https://img.icons8.com/?size=100&id=LGOY4KAmjR0K&format=png&color=000000", name: "Kamus" }
-      ];
-      const radius = 80;
-      const ballRect = ball.getBoundingClientRect();
-      const ballCenterX = ballRect.left + ballRect.width / 2;
-      const ballCenterY = ballRect.top + ballRect.height / 2;
-      menuItems.forEach((item, index) => {
-        const baseAngle = (index / menuItems.length) * (2 * Math.PI);
-        const menu = document.createElement("div");
-        menu.classList.add("floating-menu");
-        menu.dataset.baseAngle = baseAngle;
-        menu.innerHTML = `
-          <a href="${item.url}">
-            <img src="${item.icon}" alt="Icon">
-            <span class="menu-text">${item.name}</span>
-          </a>
-        `;
-        document.body.appendChild(menu);
-        menuElements.push(menu);
-        const anchor = menu.querySelector("a");
-        anchor.addEventListener("click", function(event) {
-          event.preventDefault();
-          event.stopPropagation();
-          if(item.name === "Kamus") { openKamusPopup(); }
-          else if(item.name === "Logout") { logoutUser(); }
-          else if(item.name === "Home") { window.location.href = "/"; }
-          else if(item.name === "Profile") { openProfile(); }
-          else { openPopup(item.url); }
+      const regFirstNameInput = document.getElementById("regFirstName");
+      const regLastNameInput = document.getElementById("regLastName");
+      const regEmailInput = document.getElementById("regEmail");
+      const regPasswordInput = document.getElementById("regPassword");
+      const regConfirmPasswordInput = document.getElementById("regConfirmPassword");
+      const regUserPhotoInput = document.getElementById("regUserPhoto");
+
+      const toggleIcons = document.querySelectorAll(".toggle-password");
+
+      const popupInner = document.getElementById("popupInner");
+      const openExternalBtn = document.getElementById("openExternal");
+      const notificationPopup = document.getElementById("notificationPopup");
+      const closeNotification = document.getElementById("closeNotification");
+      const notificationLoginBtn = document.getElementById("notificationLoginBtn");
+
+      const loginLoading = document.getElementById("loginLoading");
+      const registerLoading = document.getElementById("registerLoading");
+
+      const profilePopup = document.getElementById("profilePopup");
+
+      let isDragging = false, offsetX, offsetY;
+      let menuVisible = true;
+      let menuElements = [];
+      let rotationTimer = null;
+      let rotationOffset = 0;
+
+      function validateEmail(email) {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return pattern.test(email);
+      }
+      function validatePassword(password) {
+        const pattern = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+        return pattern.test(password);
+      }
+      function showError(inputElem, message) {
+        inputElem.style.border = "2px solid red";
+        console.log(message);
+      }
+      function clearError(inputElem) {
+        inputElem.style.border = "1px solid transparent";
+      }
+      toggleIcons.forEach(icon => {
+        icon.addEventListener("click", function() {
+          const targetId = this.dataset.target;
+          togglePassword(targetId, this);
         });
       });
-      updateMenuPositions();
-    }
-    function updateMenuPositions() {
-      if (!menuElements.length) return;
-      const menuSize = 50;
-      const halfMenuSize = menuSize / 2;
-      const radius = 80;
-      const ballRect = ball.getBoundingClientRect();
-      const ballCenterX = ballRect.left + ballRect.width / 2;
-      const ballCenterY = ballRect.top + ballRect.height / 2;
-      menuElements.forEach(menu => {
-        const baseAngle = parseFloat(menu.dataset.baseAngle);
-        const newAngle = baseAngle + rotationOffset;
-        const x = ballCenterX + radius * Math.cos(newAngle) - halfMenuSize;
-        const y = ballCenterY + radius * Math.sin(newAngle) - halfMenuSize;
-        menu.style.left = `${x}px`;
-        menu.style.top = `${y}px`;
+      function togglePassword(targetId, icon) {
+        const input = document.getElementById(targetId);
+        if (input.type === "password") {
+          input.type = "text";
+          icon.textContent = "x";
+        } else {
+          input.type = "password";
+          icon.textContent = "o";
+        }
+      }
+
+      // Update bola pintasan dengan data user
+      function updateBall(userData) {
+        if (userData && userData.firstName && userData.photoURL) {
+          ball.innerHTML = `<img src="${userData.photoURL}" alt="Profile" style="width:100%; height:100%; border-radius:50%; border: 3px solid rgba(0,255,0,0.3);">`;
+        } else if (userData && userData.firstName) {
+          ball.innerHTML = `<div style="border: 3px solid rgba(0,0,255,0.3); border-radius:50%; padding:10px;">${userData.firstName}</div>`;
+        } else {
+          ball.innerHTML = "+";
+        }
+        ball.dataset.loggedIn = "true";
+        createMenu();
+      }
+      function resetBall() {
+        ball.innerHTML = "+";
+        ball.dataset.loggedIn = "false";
+      }
+
+      // Saat halaman dimuat, jika data user sudah tersimpan, update bola
+      document.addEventListener("DOMContentLoaded", () => {
+        const data = loadUserData();
+        if (data) { updateBall(data); }
       });
-    }
-    function startRotation() {
-      if (rotationTimer) return;
-      rotationTimer = setInterval(() => {
-        rotationOffset += 0.05;
-        updateMenuPositions();
-      }, 30);
-    }
-    function stopRotation() {
-      if (rotationTimer) {
-        clearInterval(rotationTimer);
-        rotationTimer = null;
-      }
-    }
-    function removeMenu() {
-      menuElements.forEach(menu => menu.remove());
-      menuElements = [];
-      rotationOffset = 0;
-    }
-    closeLoginForm.addEventListener("click", () => { loginForm.style.display = "none"; });
-    closeRegistrationForm.addEventListener("click", () => { registrationForm.style.display = "none"; });
 
-    // Login event: validasi input; jika valid, login dan tampilkan data di bola
-    loginButton.addEventListener("click", async () => {
-      const email = loginEmailInput.value.trim();
-      const password = loginPasswordInput.value.trim();
-      let valid = true;
-      if (!validateEmail(email)) { showError(loginEmailInput, "Email tidak valid"); valid = false; }
-      else { clearError(loginEmailInput); }
-      if (!validatePassword(password)) { showError(loginPasswordInput, "Password harus minimal 6 karakter, 1 angka, 1 huruf kapital"); valid = false; }
-      else { clearError(loginPasswordInput); }
-      if (!valid) return;
-      loginLoading.style.display = "block";
-      try {
-        const result = await signInWithEmailAndPassword(auth, email, password);
-        localStorage.setItem("userEmail", email);
-        updateBall(result.user);
+      // Gerakan bola (sederhana)
+      function updatePosition(x, y) {
+        ball.style.left = `${x}px`;
+        ball.style.top = `${y}px`;
+      }
+      function onMouseMove(e) {
+        if (!isDragging) return;
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+        updatePosition(x, y);
+      }
+      function onTouchMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const x = touch.clientX - offsetX;
+        const y = touch.clientY - offsetY;
+        updatePosition(x, y);
+      }
+      ball.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - ball.getBoundingClientRect().left;
+        offsetY = e.clientY - ball.getBoundingClientRect().top;
+        document.addEventListener("mousemove", onMouseMove);
+      });
+      ball.addEventListener("touchstart", (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        offsetX = touch.clientX - ball.getBoundingClientRect().left;
+        offsetY = touch.clientY - ball.getBoundingClientRect().top;
+        document.addEventListener("touchmove", onTouchMove, { passive: false });
+      });
+      document.addEventListener("mouseup", () => { isDragging = false; });
+      document.addEventListener("touchend", () => { isDragging = false; });
+
+      // Klik bola: jika sudah login, tampilkan menu; jika tidak, tampilkan popup notifikasi
+      ball.addEventListener("click", () => {
+        const data = loadUserData();
+        if (data) { updateBall(data); createMenu(); }
+        else { notificationPopup.style.display = "block"; }
+      });
+      closeNotification.addEventListener("click", () => { notificationPopup.style.display = "none"; });
+      notificationLoginBtn.addEventListener("click", () => {
+        notificationPopup.style.display = "none";
+        loginForm.style.display = "block";
+      });
+      switchToReg.addEventListener("click", () => {
         loginForm.style.display = "none";
-      } catch (error) {
-        console.error("Error login:", error.message);
-      }
-      loginLoading.style.display = "none";
-    });
+        registrationForm.style.display = "block";
+      });
 
-    // Registrasi event: validasi input, otomatis login jika berhasil, dan simpan data ke Firebase dan localStorage
-    registerButton.addEventListener("click", async () => {
-      const firstName = regFirstNameInput.value.trim();
-      const lastName = regLastNameInput.value.trim();
-      const email = regEmailInput.value.trim();
-      const password = regPasswordInput.value.trim();
-      const confirmPassword = regConfirmPasswordInput.value.trim();
-      const photoFile = regUserPhotoInput.files[0];
-      let valid = true;
-      if (firstName === "") { showError(regFirstNameInput, "Harus diisi"); valid = false; } else { clearError(regFirstNameInput); }
-      if (lastName === "") { showError(regLastNameInput, "Harus diisi"); valid = false; } else { clearError(regLastNameInput); }
-      if (!validateEmail(email)) { showError(regEmailInput, "Email tidak valid"); valid = false; } else { clearError(regEmailInput); }
-      if (!validatePassword(password)) { showError(regPasswordInput, "Password harus minimal 6 karakter, 1 angka, 1 huruf kapital"); valid = false; } else { clearError(regPasswordInput); }
-      if (password !== confirmPassword) { showError(regConfirmPasswordInput, "Password tidak sama"); valid = false; } else { clearError(regConfirmPasswordInput); }
-      if (photoFile && photoFile.size > 500 * 1024) { console.error("Ukuran foto melebihi 500kb."); valid = false; }
-      if (!valid) return;
-      registerLoading.style.display = "block";
-      try {
+      // Pembuatan menu-menu dinamis
+      function createMenu() {
+        removeMenu();
+        const menuSize = 50;
+        const halfMenuSize = menuSize / 2;
+        const menuItems = [
+          { url: "/", icon: "https://img.icons8.com/?size=100&id=4WzzlhYcikZ8&format=png&color=000000", name: "Home" },
+          { url: "#", icon: "https://img.icons8.com/?size=100&id=iqSCJ5UwsKH-&format=png&color=000000", name: "Profile" },
+          { url: "https://www.arasatas.com/", icon: "https://img.icons8.com/?size=100&id=112158&format=png&color=000000", name: "About" },
+          { url: "#", icon: "https://img.icons8.com/?size=100&id=91103&format=png&color=000000", name: "Logout" },
+          { url: "https://www.arasatas.com/p/live-diskusi-aras-atas.html", icon: "https://img.icons8.com/?size=100&id=S6ym80WwHadr&format=png&color=000000", name: "Chatting" },
+          { url: "https://www.arasatas.com/p/aras-atas-generator-quotes.html", icon: "https://img.icons8.com/?size=100&id=LVB8kCgWT95b&format=png&color=000000", name: "Quotes" },
+          { url: "https://www.arasatas.com/2025/03/alat-membuat-infografis-gratis.html", icon: "https://img.icons8.com/?size=100&id=124197&format=png&color=000000", name: "Infografis" },
+          { url: "/", icon: "https://img.icons8.com/?size=100&id=113848&format=png&color=000000", name: "Tools" },
+          { url: "kamus", icon: "https://img.icons8.com/?size=100&id=LGOY4KAmjR0K&format=png&color=000000", name: "Kamus" }
+        ];
+        const radius = 80;
+        const ballRect = ball.getBoundingClientRect();
+        const ballCenterX = ballRect.left + ballRect.width / 2;
+        const ballCenterY = ballRect.top + ballRect.height / 2;
+        menuItems.forEach((item, index) => {
+          const baseAngle = (index / menuItems.length) * (2 * Math.PI);
+          const menu = document.createElement("div");
+          menu.classList.add("floating-menu");
+          menu.dataset.baseAngle = baseAngle;
+          menu.innerHTML = `
+            <a href="${item.url}">
+              <img src="${item.icon}" alt="Icon">
+              <span class="menu-text">${item.name}</span>
+            </a>
+          `;
+          document.body.appendChild(menu);
+          menuElements.push(menu);
+          const anchor = menu.querySelector("a");
+          anchor.addEventListener("click", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if(item.name === "Kamus") { openKamusPopup(); }
+            else if(item.name === "Logout") { logoutUser(); }
+            else if(item.name === "Home") { window.location.href = "/"; }
+            else if(item.name === "Profile") { openProfilePopup(); }
+            else { openPopup(item.url); }
+          });
+        });
+        updateMenuPositions();
+      }
+      function updateMenuPositions() {
+        if (!menuElements.length) return;
+        const menuSize = 50;
+        const halfMenuSize = menuSize / 2;
+        const radius = 80;
+        const ballRect = ball.getBoundingClientRect();
+        const ballCenterX = ballRect.left + ballRect.width / 2;
+        const ballCenterY = ballRect.top + ballRect.height / 2;
+        menuElements.forEach(menu => {
+          const baseAngle = parseFloat(menu.dataset.baseAngle);
+          const newAngle = baseAngle + rotationOffset;
+          const x = ballCenterX + radius * Math.cos(newAngle) - halfMenuSize;
+          const y = ballCenterY + radius * Math.sin(newAngle) - halfMenuSize;
+          menu.style.left = `${x}px`;
+          menu.style.top = `${y}px`;
+        });
+      }
+      function startRotation() {
+        if (rotationTimer) return;
+        rotationTimer = setInterval(() => {
+          rotationOffset += 0.05;
+          updateMenuPositions();
+        }, 30);
+      }
+      function stopRotation() {
+        if (rotationTimer) {
+          clearInterval(rotationTimer);
+          rotationTimer = null;
+        }
+      }
+      function removeMenu() {
+        menuElements.forEach(menu => menu.remove());
+        menuElements = [];
+        rotationOffset = 0;
+      }
+
+      closeLoginForm.addEventListener("click", () => { loginForm.style.display = "none"; });
+      closeRegistrationForm.addEventListener("click", () => { registrationForm.style.display = "none"; });
+
+      loginButton.addEventListener("click", () => {
+        const email = loginEmailInput.value.trim();
+        const password = loginPasswordInput.value.trim();
+        let valid = true;
+        if (!validateEmail(email)) { showError(loginEmailInput, "Email tidak valid"); valid = false; }
+        else { clearError(loginEmailInput); }
+        if (!validatePassword(password)) { showError(loginPasswordInput, "Password harus minimal 6 karakter, 1 angka, 1 huruf kapital"); valid = false; }
+        else { clearError(loginPasswordInput); }
+        if (!valid) return;
+        loginLoading.style.display = "block";
+        const data = loadUserData();
+        if (data && data.email === email && data.password === password) {
+          updateBall(data);
+          loginForm.style.display = "none";
+        } else {
+          alert("Email atau password salah.");
+        }
+        loginLoading.style.display = "none";
+      });
+
+      registerButton.addEventListener("click", async () => {
+        const firstName = regFirstNameInput.value.trim();
+        const lastName = regLastNameInput.value.trim();
+        const email = regEmailInput.value.trim();
+        const password = regPasswordInput.value.trim();
+        const confirmPassword = regConfirmPasswordInput.value.trim();
+        const photoFile = regUserPhotoInput.files[0];
+        let valid = true;
+        if (firstName === "") { showError(regFirstNameInput, "Harus diisi"); valid = false; } else { clearError(regFirstNameInput); }
+        if (lastName === "") { showError(regLastNameInput, "Harus diisi"); valid = false; } else { clearError(regLastNameInput); }
+        if (!validateEmail(email)) { showError(regEmailInput, "Email tidak valid"); valid = false; } else { clearError(regEmailInput); }
+        if (!validatePassword(password)) { showError(regPasswordInput, "Password harus minimal 6 karakter, 1 angka, 1 huruf kapital"); valid = false; } else { clearError(regPasswordInput); }
+        if (password !== confirmPassword) { showError(regConfirmPasswordInput, "Password tidak sama"); valid = false; } else { clearError(regConfirmPasswordInput); }
+        if (photoFile && photoFile.size > 500 * 1024) { console.error("Ukuran foto melebihi 500kb."); valid = false; }
+        if (!valid) return;
+        registerLoading.style.display = "block";
         let photoURL = "";
         if (photoFile) {
           photoURL = await new Promise((resolve, reject) => {
@@ -838,175 +813,110 @@ const firebaseConfig = {
             reader.readAsDataURL(photoFile);
           });
         }
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, {
-          displayName: firstName + " " + lastName,
+        const userData = {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
           photoURL: photoURL
-        });
-        await auth.currentUser.reload();
-        // Simpan data ke localStorage sebagai fallback
-        localStorage.setItem("firstName", firstName);
-        localStorage.setItem("lastName", lastName);
-        localStorage.setItem("userPhoto", photoURL);
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("userPassword", password);
-        updateBall(auth.currentUser);
+        };
+        saveUserData(userData);
+        updateBall(userData);
         registrationForm.style.display = "none";
-      } catch (error) {
-        if (error.code === "auth/email-already-in-use") {
-          alert("Email sudah terdaftar. Silakan login.");
-          registrationForm.style.display = "none";
-          loginForm.style.display = "block";
+        registerLoading.style.display = "none";
+      });
+
+      function openPopup(url) {
+        const popupModal = document.getElementById("popupModal");
+        const popupIframe = document.getElementById("popupIframe");
+        popupIframe.src = url;
+        popupModal.style.display = "flex";
+      }
+      document.getElementById("closePopup").addEventListener("click", () => {
+        const popupModal = document.getElementById("popupModal");
+        popupModal.style.display = "none";
+        document.getElementById("popupIframe").src = "";
+      });
+      function openKamusPopup() {
+        document.getElementById("kamusPopup").style.display = "flex";
+      }
+      document.getElementById("closeKamusPopup").addEventListener("click", () => {
+        document.getElementById("kamusPopup").style.display = "none";
+        document.getElementById("kamusResult").innerHTML = "";
+        document.getElementById("kamusSource").innerHTML = "";
+      });
+      document.getElementById("cariKata").addEventListener("click", () => {
+        const kata = document.getElementById("kataCari").value.trim();
+        if (kata === "") {
+          console.error("Silakan masukkan kata yang ingin dicari.");
+          return;
+        }
+        searchKamus(kata);
+      });
+      function searchKamus(keyword) {
+        const resultDiv = document.getElementById("kamusResult");
+        const sourceDiv = document.getElementById("kamusSource");
+        resultDiv.innerHTML = "Mencari definisi...";
+        sourceDiv.innerHTML = "";
+        const wikiURL = `https://id.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${encodeURIComponent(keyword)}&origin=*`;
+        fetch(wikiURL)
+          .then(response => {
+            if (!response.ok) { throw new Error("Gagal mendapatkan data dari Wikipedia"); }
+            return response.json();
+          })
+          .then(data => {
+            const pages = data.query.pages;
+            const page = pages[Object.keys(pages)[0]];
+            const wikiExtract = page && page.extract ? page.extract : "Definisi tidak ditemukan di Wikipedia.";
+            resultDiv.innerHTML = `<h4>Wikipedia</h4>${wikiExtract}`;
+            sourceDiv.innerHTML = `Sumber: Wikipedia (<a href="https://id.wikipedia.org" target="_blank">https://id.wikipedia.org</a>)`;
+          })
+          .catch(error => {
+            console.error("Error:", error.message);
+            resultDiv.innerHTML = `<span style="color:red;">Terjadi kesalahan: ${error.message}</span>`;
+          });
+      }
+      popupInner.addEventListener("scroll", () => {
+        if (popupInner.scrollTop + popupInner.clientHeight >= popupInner.scrollHeight * 0.9) {
+          openExternalBtn.style.display = "block";
         } else {
-          console.error("Error registrasi:", error.message);
-          registrationForm.style.display = "none";
+          openExternalBtn.style.display = "none";
+        }
+      });
+      openExternalBtn.addEventListener("click", () => {
+        const popupIframe = document.getElementById("popupIframe");
+        if (popupIframe.src) { window.open(popupIframe.src, "_blank"); }
+      });
+      function logoutUser() {
+        if (confirm("Apakah Anda yakin ingin keluar?")) {
+          localStorage.removeItem("user_data");
+          resetBall();
+          removeMenu();
+          menuVisible = false;
+          alert("Anda telah logout.");
         }
       }
-      registerLoading.style.display = "none";
-    });
-
-    function openPopup(url) {
-      const popupModal = document.getElementById("popupModal");
-      const popupIframe = document.getElementById("popupIframe");
-      popupIframe.src = url;
-      popupModal.style.display = "flex";
-    }
-    document.getElementById("closePopup").addEventListener("click", () => {
-      const popupModal = document.getElementById("popupModal");
-      popupModal.style.display = "none";
-      document.getElementById("popupIframe").src = "";
-    });
-    function openKamusPopup() {
-      document.getElementById("kamusPopup").style.display = "flex";
-    }
-    document.getElementById("closeKamusPopup").addEventListener("click", () => {
-      document.getElementById("kamusPopup").style.display = "none";
-      document.getElementById("kamusResult").innerHTML = "";
-      document.getElementById("kamusSource").innerHTML = "";
-    });
-    document.getElementById("cariKata").addEventListener("click", () => {
-      const kata = document.getElementById("kataCari").value.trim();
-      if (kata === "") {
-        console.error("Silakan masukkan kata yang ingin dicari.");
-        return;
+      function openProfilePopup() {
+        const data = loadUserData();
+        if (data) {
+          document.getElementById("profileName").textContent = data.firstName + " " + data.lastName;
+          document.getElementById("profileEmail").textContent = data.email;
+          if (data.photoURL) {
+            document.getElementById("profilePhoto").innerHTML = `<img src="${data.photoURL}" alt="Profile" style="width:80px; height:80px; border-radius:50%; object-fit: cover;">`;
+          } else {
+            document.getElementById("profilePhoto").innerHTML = `<div style="width:80px; height:80px; border-radius:50%; background: #ccc; display: flex; align-items: center; justify-content: center;">${data.firstName.charAt(0)}</div>`;
+          }
+          document.getElementById("passwordText").textContent = "********";
+          document.getElementById("togglePassword").textContent = "o";
+          profilePopup.style.display = "flex";
+        } else {
+          alert("Data profil tidak ditemukan.");
+        }
       }
-      searchKamus(kata);
-    });
-    function searchKamus(keyword) {
-      const resultDiv = document.getElementById("kamusResult");
-      const sourceDiv = document.getElementById("kamusSource");
-      resultDiv.innerHTML = "Mencari definisi...";
-      sourceDiv.innerHTML = "";
-      const wikiURL = `https://id.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${encodeURIComponent(keyword)}&origin=*`;
-      fetch(wikiURL)
-        .then(response => {
-          if (!response.ok) { throw new Error("Gagal mendapatkan data dari Wikipedia"); }
-          return response.json();
-        })
-        .then(data => {
-          const pages = data.query.pages;
-          const page = pages[Object.keys(pages)[0]];
-          const wikiExtract = page && page.extract ? page.extract : "Definisi tidak ditemukan di Wikipedia.";
-          resultDiv.innerHTML = `<h4>Wikipedia</h4>${wikiExtract}`;
-          sourceDiv.innerHTML = `Sumber: Wikipedia (<a href="https://id.wikipedia.org" target="_blank">https://id.wikipedia.org</a>)`;
-        })
-        .catch(error => {
-          console.error("Error:", error.message);
-          resultDiv.innerHTML = `<span style="color:red;">Terjadi kesalahan: ${error.message}</span>`;
-        });
-    }
-    popupInner.addEventListener("scroll", () => {
-      if (popupInner.scrollTop + popupInner.clientHeight >= popupInner.scrollHeight * 0.9) {
-        openExternalBtn.style.display = "block";
-      } else {
-        openExternalBtn.style.display = "none";
+      function openProfileMenu() {
+        openProfilePopup();
       }
-    });
-    openExternalBtn.addEventListener("click", () => {
-      const popupIframe = document.getElementById("popupIframe");
-      if (popupIframe.src) { window.open(popupIframe.src, "_blank"); }
-    });
-    function logoutUser() {
-      if (confirm("Apakah Anda yakin ingin keluar?")) {
-        signOut(auth)
-          .then(() => {
-            localStorage.removeItem("firstName");
-            localStorage.removeItem("lastName");
-            localStorage.removeItem("userEmail");
-            localStorage.removeItem("userPhoto");
-            localStorage.removeItem("userPassword");
-            ball.innerHTML = "+";
-            ball.dataset.loggedIn = "false";
-            ball.style.border = "";
-            removeMenu();
-            menuVisible = false;
-          })
-          .catch(error => { console.error("Gagal logout:", error.message); });
-      }
-    }
-
-    // Fungsi untuk membuka container profil dan mengisi data registrasi.
-    // Solusi: Ambil data dari Firebase (jika tersedia) dan fallback ke localStorage
-    function openProfile() {
-      const profileContainer = document.getElementById("profileContainer");
-      const profilePhoto = document.getElementById("profilePhoto");
-      const profileName = document.getElementById("profileName");
-      const profileEmail = document.getElementById("profileEmail");
-      const profilePassword = document.getElementById("profilePassword");
-
-      const firebaseUser = auth.currentUser;
-      // Jika firebase user tersedia, gunakan data realtime dari Firebase.
-      if (firebaseUser) {
-         profilePhoto.src = firebaseUser.photoURL || localStorage.getItem("userPhoto") || "default-photo.png";
-         profileName.textContent = firebaseUser.displayName || (localStorage.getItem("firstName") + " " + localStorage.getItem("lastName"));
-         profileEmail.textContent = firebaseUser.email || localStorage.getItem("userEmail") || "";
-      } else {
-         profilePhoto.src = localStorage.getItem("userPhoto") || "default-photo.png";
-         profileName.textContent = (localStorage.getItem("firstName") + " " + localStorage.getItem("lastName"));
-         profileEmail.textContent = localStorage.getItem("userEmail") || "";
-      }
-      // Untuk password, selalu ambil dari localStorage karena Firebase tidak menyediakannya.
-      profilePassword.textContent = "******";
-      profilePassword.dataset.visible = "false";
-      document.getElementById("toggleProfilePassword").textContent = "o";
-
-      profileContainer.style.display = "flex";
-    }
-
-    // Event listener untuk menutup container profil
-    document.getElementById("closeProfile").addEventListener("click", () => {
-      document.getElementById("profileContainer").style.display = "none";
-    });
-
-    // Event listener untuk toggle password di container profil
-    document.getElementById("toggleProfilePassword").addEventListener("click", function() {
-      const profilePassword = document.getElementById("profilePassword");
-      if (profilePassword.dataset.visible === "true") {
-        profilePassword.textContent = "******";
-        profilePassword.dataset.visible = "false";
-        this.textContent = "o";
-      } else {
-        profilePassword.textContent = localStorage.getItem("userPassword") || "******";
-        profilePassword.dataset.visible = "true";
-        this.textContent = "x";
-      }
-    });
-
-    // Event listener untuk posting status quotes
-    document.getElementById("postStatusButton").addEventListener("click", function(){
-       const statusText = document.getElementById("profileStatusInput").value.trim();
-       if(statusText !== "") {
-           // Placeholder: Tampilkan data status posting di console
-           console.log("Status Posted:", {
-              name: localStorage.getItem("firstName") + " " + localStorage.getItem("lastName"),
-              photo: localStorage.getItem("userPhoto"),
-              status: statusText
-           });
-           alert("Status berhasil diposting!");
-           document.getElementById("profileStatusInput").value = "";
-       } else {
-           alert("Silakan tulis status Anda sebelum posting.");
-       }
-    });
-  });
-</script>
+      document.getElementById("closeProfilePopup").addEventListener("click", () => { profilePopup.style.display = "none"; });
+    </script>
+  </body>
+</html>
