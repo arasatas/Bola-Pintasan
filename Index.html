@@ -1,5 +1,9 @@
 <!doctype html>
-<!-- Bola Pintasan Aras Atas -->
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bola Pintasan Interaktif</title>
     <style>
       /* Gaya bola pintasan dengan efek 3D dan tampilan nama di bagian bawah */
       .floating-ball {
@@ -525,8 +529,8 @@
           border-bottom: 1px solid #eee;
       }
     </style>
-  
-  
+  </head>
+  <body>
     <!-- Elemen utama untuk bola pintasan -->
     <div id="floatingBall" class="floating-ball"><span style="font-size: 10px;">∞</span></div>
 
@@ -606,7 +610,7 @@
           <!-- Ikon pensil sebagai tombol edit foto, diposisikan di kiri -->
           <span id="editPhotoIcon">✎</span>
           <!-- Input file disembunyikan -->
-          <input type="file" id="uploadPhoto" accept="image/*" />
+          <input type="file" id="uploadPhoto" accept="image/*">
         </div>
         <!-- Identitas Pengguna – editable -->
         <div id="profileData">
@@ -1294,5 +1298,5 @@
           checkLoginStatus();
       });
     </script>
-  
-</!doctype>
+  </body>
+</html>
