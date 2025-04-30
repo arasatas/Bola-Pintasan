@@ -1,37 +1,38 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Bola Pintasan Interaktif Aras Atas</title>
+<!-- Bola Pintasan Aras Atas -->
     <style>
-      /* Gaya bola pintasan dengan efek 3D */
+      /* Gaya bola pintasan dengan efek 3D dan tampilan nama di bagian bawah */
       .floating-ball {
           position: fixed;
           bottom: 50px;
           right: 50px;
           width: 70px;
           height: 70px;
-          background-color: rgba(50, 50, 50, 0.8);
+          background: linear-gradient(rgba(0, 64, 0, 0.5), rgba(0, 0, 0, 0.9));
           border-radius: 50%;
           display: flex;
-          justify-content: center;
+          flex-direction: column;
+          justify-content: flex-end;
           align-items: center;
-          text-align: center;
           cursor: pointer;
           z-index: 9999;
-          font-size: 20px;
-          font-weight: bold;
+          color: white;
+          font-size: 10px;
+          font-family: Arial, sans-serif;
+          text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
           user-select: none;
           transition: transform 0.5s ease-out;
           box-shadow: 0 8px 15px rgba(0,0,0,0.3);
           transform: perspective(500px) rotateX(5deg) rotateY(5deg);
+          padding-bottom: 5px;
       }
-      /* Gaya menu bola (dinamis) */
+
+      /* Gaya menu (bola) dengan efek 3D, posisi fixed agar tidak ikut bergeser */
       .floating-menu {
-          position: absolute;
+          position: fixed;
           width: 50px;
           height: 50px;
-          background-color: rgba(255, 255, 255, 0.9);
+          background: linear-gradient(rgba(0, 64, 0, 0.6), rgba(0, 0, 0, 0.6));
           border-radius: 50%;
           display: flex;
           justify-content: center;
@@ -43,13 +44,8 @@
           box-shadow: 0 6px 12px rgba(0,0,0,0.2);
           transform: perspective(500px) rotateX(3deg) rotateY(3deg);
       }
-      .floating-menu a {
-          position: relative;
-          display: block;
-          width: 100%;
-          height: 100%;
-          text-decoration: none;
-      }
+
+      /* Perbaikan: Teks menu di tengah bola */
       .floating-menu a .menu-text {
           position: absolute;
           top: 50%;
@@ -59,13 +55,17 @@
           font-weight: bold;
           pointer-events: none;
       }
+
+      /* Gaya gambar ikon dalam bola pintasan/menu */
+      .floating-ball img,
       .floating-menu img {
-          width: 100%;
+          width: auto;
           height: 100%;
           border-radius: 50%;
-          object-fit: cover;
+          object-fit: contain;
       }
-      /* Form Login */
+      
+      /* CSS untuk Form Login/Registrasi */
       .floating-login-form {
           position: fixed;
           top: 50%;
@@ -76,172 +76,93 @@
           border-radius: 15px;
           display: none;
           z-index: 10002;
+          width: 90%;
           max-width: 400px;
-          width: 90%;
-          box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           transition: all 0.3s ease-in-out;
           color: #fff;
-          position: relative;
       }
       @media (max-width: 600px) {
-          .floating-login-form { max-width: 320px; padding: 30px; }
+          .floating-login-form {
+              max-width: 320px;
+              padding: 30px;
+          }
       }
-      /* Form Registrasi */
-      .floating-registration-form {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-          padding: 30px;
-          border-radius: 15px;
-          display: none;
-          z-index: 10005;
-          max-width: 500px;
-          width: 90%;
-          box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          transition: all 0.3s ease-in-out;
+
+      /* Header Form */
+      .floating-login-form h2 {
+          font-size: 26px;
           color: #fff;
-          position: relative;
+          text-align: center;
+          margin-bottom: 25px;
+          font-weight: bold;
       }
-      @media (max-width: 600px) {
-          .floating-registration-form { max-width: 320px; padding: 20px; }
-      }
-      /* Popup Profil */
-      #profilePopup {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.5);
-          z-index: 10004;
-          display: none;
-          align-items: center;
+
+      /* Switch mode login/registrasi */
+      .form-toggle {
+          display: flex;
           justify-content: center;
-      }
-      #profilePopup .floating-popup-content {
-          position: relative;
-          width: 90%;
-          max-width: 400px;
-          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-          border-radius: 15px;
-          box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-          padding: 20px;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          color: #fff;
-      }
-      #profilePopup #profileContainer {
-          display: flex;
-          align-items: center;
           margin-bottom: 20px;
-          position: relative;
       }
-      #profilePopup #profilePhoto {
-          flex: 0 0 80px;
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          overflow: hidden;
-          margin-right: 20px;
-      }
-      #profilePopup #profilePhoto img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-      }
-      #profilePopup #profileInfo {
-          flex: 1;
-      }
-      #profilePopup #profileInfo div {
-          margin: 3px 0;
-      }
-      #profilePopup #profilePassword {
-          display: flex;
-          align-items: center;
-      }
-      #profilePopup #profilePassword span {
-          margin-right: 10px;
-      }
-      #profilePopup #togglePassword {
-          cursor: pointer;
-          margin-left: 10px;
-      }
-      #profilePopup #editProfile {
-          position: absolute;
-          top: 0;
-          right: 0;
-          cursor: pointer;
-      }
-      #profilePopup #editProfile img {
-          width: 24px;
-          height: 24px;
-      }
-      #profilePopup #profileStatus {
-          margin-top: 10px;
-      }
-      #profilePopup #statusInput {
-          width: 100%;
-          height: 60px;
-          border-radius: 8px;
-          padding: 10px;
-          border: 1px solid transparent;
-          transition: border 0.3s;
-      }
-      #profilePopup #statusInput:focus {
-          outline: none;
-          border-color: #74ebd5;
-      }
-      #profilePopup #postStatus {
-          margin-top: 10px;
-          width: 100%;
-          padding: 10px;
-          background-color: #ff6f61;
-          border: none;
-          border-radius: 8px;
+      .form-toggle button {
+          background: transparent;
+          border: 1px solid #fff;
           color: #fff;
-          font-size: 16px;
+          padding: 5px 15px;
+          margin: 0 5px;
           cursor: pointer;
-          transition: background-color 0.3s;
+          border-radius: 5px;
       }
-      #profilePopup #postStatus:hover {
-          background-color: #ff4a3d;
+      .form-toggle button.active {
+          background: #ff6f61;
+          border-color: #ff6f61;
       }
-      /* Input Fields (Login & Registrasi) */
-      .floating-login-form input,
-      .floating-registration-form input {
+
+      /* Input fields */
+      .floating-login-form input {
           width: 100%;
           padding: 12px;
           margin: 10px 0;
-          border: 1px solid transparent;
+          border: none;
           border-radius: 8px;
           font-size: 16px;
           background-color: #fff;
           color: #333;
           box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-          transition: border 0.3s;
       }
-      .floating-login-form input:focus,
-      .floating-registration-form input:focus {
+      .floating-login-form input:focus {
           outline: none;
-          border-color: #74ebd5;
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
       }
-      .name-container { display: flex; gap: 10px; }
-      .name-container input { width: 50%; margin: 10px 0; }
-      .password-container { position: relative; }
-      .password-container .toggle-password {
+
+      /* Container untuk input password dengan ikon toggle */
+      .password-container {
+          position: relative;
+      }
+      .toggle-password {
           position: absolute;
-          top: 50%;
           right: 10px;
+          top: 50%;
           transform: translateY(-50%);
           cursor: pointer;
-          font-size: 16px;
           color: #333;
+          font-weight: bold;
+          user-select: none;
       }
-      .floating-login-form button,
-      .floating-registration-form button {
+
+      /* Input nama berdampingan (registrasi) */
+      .name-group {
+          display: flex;
+          gap: 10px;
+      }
+      .name-group input {
+          width: 50%;
+          margin: 10px 0;
+      }
+
+      /* Tombol submit */
+      .floating-login-form button.submit-btn {
           width: 100%;
           padding: 14px;
           background-color: #ff6f61;
@@ -252,10 +173,12 @@
           cursor: pointer;
           transition: background-color 0.3s ease;
       }
-      .floating-login-form button:hover,
-      .floating-registration-form button:hover { background-color: #ff4a3d; }
-      .floating-login-form .close-login,
-      .floating-registration-form .close-registration {
+      .floating-login-form button.submit-btn:hover {
+          background-color: #ff4a3d;
+      }
+
+      /* Tombol close pada form */
+      .floating-login-form .close-login {
           position: absolute;
           top: -10px;
           right: -10px;
@@ -270,25 +193,10 @@
           align-items: center;
           cursor: pointer;
           font-weight: bold;
+          z-index: 10003;
       }
-      .switch-to-registration {
-          margin-top: 10px;
-          text-align: center;
-          cursor: pointer;
-          font-size: 14px;
-          text-decoration: underline;
-      }
-      .loading-indicator {
-          border: 4px solid rgba(255, 255, 255, 0.3);
-          border-top: 4px solid #fff;
-          border-radius: 50%;
-          width: 30px;
-          height: 30px;
-          animation: spin 1s linear infinite;
-          margin: 10px auto;
-          display: none;
-      }
-      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* Popup modal URL */
       .floating-popup-modal {
           position: fixed;
           top: 0;
@@ -311,7 +219,10 @@
           display: flex;
           flex-direction: column;
       }
-      .floating-popup-inner { flex: 1; overflow-y: auto; }
+      .floating-popup-inner {
+          flex: 1;
+          overflow-y: auto;
+      }
       #openExternal {
           display: none;
           padding: 10px 20px;
@@ -330,22 +241,8 @@
           font-weight: bold;
           cursor: pointer;
       }
-      .floating-menu a {
-          position: relative;
-          display: block;
-          width: 100%;
-          height: 100%;
-          text-decoration: none;
-      }
-      .floating-menu a .menu-text {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          font-size: 10px;
-          font-weight: bold;
-          pointer-events: none;
-      }
+
+      /* Popup modal Kamus Ilmiah */
       #kamusPopup {
           position: fixed;
           top: 0;
@@ -367,7 +264,10 @@
           padding: 20px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       }
-      #kamusContent h3 { margin-top: 0; text-align: center; }
+      #kamusContent h3 {
+          margin-top: 0;
+          text-align: center;
+      }
       #kamusContent input[type="text"] {
           width: calc(100% - 20px);
           padding: 8px 10px;
@@ -386,7 +286,9 @@
           border-radius: 4px;
           cursor: pointer;
       }
-      #kamusContent button:hover { background: #0056b3; }
+      #kamusContent button:hover {
+          background: #0056b3;
+      }
       #kamusResult {
           margin-top: 15px;
           max-height: 300px;
@@ -402,6 +304,8 @@
           color: #555;
           text-align: right;
       }
+
+      /* Popup Notifikasi Awal */
       .floating-notification {
           position: fixed;
           top: 50%;
@@ -412,20 +316,20 @@
           border-radius: 15px;
           box-shadow: 0 8px 16px rgba(0,0,0,0.3);
           z-index: 10003;
-          max-width: 400px;
           width: 90%;
+          max-width: 400px;
       }
       .floating-notification h2 {
           font-size: 24px;
           margin-bottom: 10px;
-          text-align: center;
           color: #fff;
+          text-align: center;
       }
       .floating-notification p {
           font-size: 16px;
+          color: #fff;
           margin-bottom: 20px;
           text-align: center;
-          color: #fff;
       }
       .floating-notification .close-notification {
           position: absolute;
@@ -446,477 +350,949 @@
           font-size: 16px;
           cursor: pointer;
       }
-      .floating-notification button:hover { background-color: #ff4a3d; }
+      .floating-notification button:hover {
+          background-color: #ff4a3d;
+      }
+
+      /* --- Popup Profil --- */
+      #profilePopup {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.5);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 10004;
+      }
+      #profileContent {
+          background: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          width: 90%;
+          max-width: 500px;
+          min-height: 600px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          position: relative;
+      }
+      /* Foto profil */
+      #profilePhotoContainer {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+      }
+      #profilePhoto {
+          width: 90px;
+          height: 90px;
+          border-radius: 50%;
+          background-color: #ccc;
+          background-size: cover;
+          background-position: center;
+          margin-bottom: 5px;
+      }
+      /* Ikon pensil sebagai tombol edit foto, geser ke kiri */
+      #editPhotoIcon {
+          position: absolute;
+          top: 0px;
+          left: center;
+          background: rgba(0,0,0,0.5);
+          color: #fff;
+          font-size: 12px;
+          padding: 0px 4px;
+          border-radius: 50%;
+          cursor: pointer;
+      }
+      /* Sembunyikan input file asli */
+      #uploadPhoto {
+          display: none;
+      }
+      /* Data profil – identitas pengguna (editable) */
+      #profileData {
+          font-family: sans-serif;
+          font-size: 14px;
+          overflow-wrap: break-word;
+          padding: 5px;
+      }
+      #profileData p {
+          margin: 5px 0;
+          font-size: 14px;
+      }
+      #profileData input[type="text"] {
+          font-size: 14px;
+          padding: 4px;
+          width: 80%;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+      }
+      /* Untuk password di profil: disembunyikan dan toggle dengan konfirmasi */
+      #profileData .password-container {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+      }
+      #profilePassword {
+          font-family: monospace;
+      }
+      #toggleProfilePassword {
+          cursor: pointer;
+          font-weight: bold;
+      }
+      #closeProfilePopup {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          background: red;
+          color: #fff;
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          font-weight: bold;
+      }
+
+      /* --- Status Live Diskusi --- */
+      #statusFeedSection {
+          border-top: 1px solid #ccc;
+          padding-top: 10px;
+          margin-top: auto;
+      }
+      #statusFeed {
+          max-height: 150px;
+          overflow-y: auto;
+          margin-bottom: 10px;
+      }
+      #statusInput {
+          width: 100%;
+          min-height: 30px;
+          resize: vertical;
+          padding: 5px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+      }
+      #postStatusBtn {
+          margin-top: 5px;
+          padding: 8px 12px;
+          background-color: #28a745;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+      .status-item {
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 8px;
+          margin-bottom: 10px;
+      }
+      .comment-section {
+          margin-top: 5px;
+          padding-left: 10px;
+          border-left: 2px solid #ccc;
+      }
+      .comment-input {
+          width: 100%;
+          padding: 5px;
+          font-size: 13px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          margin-top: 5px;
+      }
+      .post-comment-btn {
+          margin-top: 3px;
+          padding: 5px 8px;
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          font-size: 13px;
+          cursor: pointer;
+      }
+      /* Style untuk item komentar */
+      .comment-item {
+          font-size: 13px;
+          margin-top: 3px;
+          padding: 3px;
+          border-bottom: 1px solid #eee;
+      }
     </style>
-  </head>
-  <body>
-    <div id="floatingBall" class="floating-ball">+</div>
+  
+  
+    <!-- Elemen utama untuk bola pintasan -->
+    <div id="floatingBall" class="floating-ball"><span style="font-size: 10px;">∞</span></div>
 
+    <!-- Popup notifikasi untuk tampilan awal -->
     <div id="notificationPopup" class="floating-notification" style="display: none;">
-      <span class="close-notification" id="closeNotification">&times;</span>
-      <h2>Selamat Datang Di Aras Atas</h2>
-      <p>Blog Aras Atas adalah platform literasi dan diskusi interaktif untuk generasi muda Indonesia. Bola Pintasan Interaktif memudahkan akses ke berbagai menu dan fitur inovatif.</p>
-      <button id="notificationLoginBtn">Login</button>
+        <span class="close-notification" id="closeNotification">&times;</span>
+        <h2>Selamat Datang Di Aras Atas</h2>
+        <p>Blog Aras Atas adalah platform literasi dan diskusi interaktif untuk generasi muda Indonesia. Bola Pintasan Interaktif ini memudahkan akses ke berbagai menu menarik dan fitur inovatif untuk pengalaman digital yang lebih menyenangkan.</p>
+        <button id="notificationLoginBtn">Login / Registrasi</button>
     </div>
 
+    <!-- Form Login & Registrasi -->
     <div id="loginForm" class="floating-login-form">
-      <span class="close-login" id="closeLoginForm">X</span>
-      <h2>Login</h2>
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <div class="password-container">
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <span class="toggle-password" data-target="loginPassword">o</span>
-      </div>
-      <button id="loginButton">Login</button>
-      <div id="loginLoading" class="loading-indicator"></div>
-      <div class="switch-to-registration" id="switchToReg">Belum punya akun? Registrasi</div>
+        <span class="close-login" id="closeLoginForm">X</span>
+        <div class="form-toggle">
+            <button id="loginTab" class="active">Login</button>
+            <button id="registerTab">Registrasi</button>
+        </div>
+        <!-- Section Login -->
+        <div id="loginSection">
+            <input type="email" id="loginEmail" placeholder="Email" required />
+            <div class="password-container">
+              <input type="password" id="loginPassword" placeholder="Password" required />
+              <span id="toggleLoginPassword" class="toggle-password">o</span>
+            </div>
+            <button id="loginButton" class="submit-btn">Login</button>
+        </div>
+        <!-- Section Registrasi -->
+        <div id="registerSection" style="display: none;">
+            <div class="name-group">
+                <input type="text" id="regFirstName" placeholder="Nama Depan" required />
+                <input type="text" id="regLastName" placeholder="Nama Belakang" required />
+            </div>
+            <input type="email" id="regEmail" placeholder="Email" required />
+            <div class="password-container">
+              <input type="password" id="regPassword" placeholder="Password" required />
+              <span id="toggleRegPassword" class="toggle-password">o</span>
+            </div>
+            <div class="password-container">
+              <input type="password" id="regPasswordVerify" placeholder="Verifikasi Password" required />
+              <span id="toggleRegPasswordVerify" class="toggle-password">o</span>
+            </div>
+            <button id="registerButton" class="submit-btn">Registrasi</button>
+        </div>
     </div>
 
-    <div id="registrationForm" class="floating-registration-form">
-      <span class="close-registration" id="closeRegistrationForm">X</span>
-      <h2>Registrasi</h2>
-      <div class="name-container">
-        <input type="text" id="regFirstName" placeholder="Nama Depan" required />
-        <input type="text" id="regLastName" placeholder="Nama Belakang" required />
-      </div>
-      <input type="email" id="regEmail" placeholder="Email" required />
-      <div class="password-container">
-        <input type="password" id="regPassword" placeholder="Password" required />
-        <span class="toggle-password" data-target="regPassword">o</span>
-      </div>
-      <div class="password-container">
-        <input type="password" id="regConfirmPassword" placeholder="Verifikasi Password" required />
-        <span class="toggle-password" data-target="regConfirmPassword">o</span>
-      </div>
-      <input type="file" id="regUserPhoto" accept="image/*" />
-      <small style="color:#fff; display:block; text-align:center;">Maksimal 500kb</small>
-      <button id="registerButton">Registrasi</button>
-      <div id="registerLoading" class="loading-indicator"></div>
-    </div>
-
+    <!-- Popup modal untuk URL eksternal -->
     <div id="popupModal" class="floating-popup-modal" style="display: none;">
-      <div class="floating-popup-content">
-        <span class="floating-close-popup" id="closePopup">&times;</span>
-        <div class="floating-popup-inner" id="popupInner">
-          <iframe id="popupIframe" src="" frameborder="0" style="width:100%; height:100%;"></iframe>
+        <div class="floating-popup-content">
+            <span class="floating-close-popup" id="closePopup">&times;</span>
+            <div class="floating-popup-inner" id="popupInner">
+                <iframe id="popupIframe" src="" frameborder="0" style="width:100%; height:100%;"></iframe>
+            </div>
+            <button id="openExternal">Buka Link Eksternal</button>
         </div>
-        <button id="openExternal">Buka Link Eksternal</button>
-      </div>
     </div>
 
-    <div id="profilePopup" class="floating-popup-modal" style="display: none;">
-      <div class="floating-popup-content">
-        <span class="floating-close-popup" id="closeProfilePopup">&times;</span>
-        <div id="profileContainer">
+    <!-- Popup modal Kamus Ilmiah -->
+    <div id="kamusPopup">
+        <div id="kamusContent">
+            <span class="floating-close-popup" id="closeKamusPopup" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:24px;">&times;</span>
+            <h3>Kamus Ilmiah</h3>
+            <input type="text" id="kataCari" placeholder="Masukkan kata yang ingin dicari definisinya" />
+            <button id="cariKata">Cari</button>
+            <div id="kamusResult"></div>
+            <div id="kamusSource"></div>
+        </div>
+    </div>
+
+    <!-- Popup Profil (hanya dapat diakses oleh pemilik akun) -->
+    <div id="profilePopup">
+      <div id="profileContent">
+        <span id="closeProfilePopup">×</span>
+        <!-- Foto Profil -->
+        <div id="profilePhotoContainer">
           <div id="profilePhoto"></div>
-          <div id="profileInfo">
-            <div id="profileName"></div>
-            <div id="profileEmail"></div>
-            <div id="profilePassword">
-              <span id="passwordText"></span>
-              <span id="togglePassword" style="cursor: pointer; margin-left: 10px;">o</span>
-            </div>
-            <div id="editProfile" style="position: absolute; top: 0; right: 0; cursor: pointer;">
-              <img src="https://img.icons8.com/material-rounded/24/ffffff/pencil.png" alt="Edit">
-            </div>
-          </div>
+          <!-- Ikon pensil sebagai tombol edit foto, diposisikan di kiri -->
+          <span id="editPhotoIcon">✎</span>
+          <!-- Input file disembunyikan -->
+          <input type="file" id="uploadPhoto" accept="image/*" />
         </div>
-        <div id="profileStatus">
-          <textarea id="statusInput" placeholder="Tulis status quotes..." style="width:100%; height:60px; border-radius:8px; padding:10px; border: 1px solid transparent; transition: border 0.3s;"></textarea>
-          <button id="postStatus" style="margin-top:10px; width:100%; padding:10px; background-color:#ff6f61; border:none; border-radius:8px; color:#fff; font-size:16px; cursor:pointer;">Posting</button>
+        <!-- Identitas Pengguna – editable -->
+        <div id="profileData">
+          <p><strong>Nama:</strong> <input type="text" id="profileNameInput" value="" /></p>
+          <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+          <p>
+            <strong>Password:</strong>
+            <span id="profilePassword">••••••</span>
+            <span id="toggleProfilePassword" style="cursor:pointer;">o</span>
+          </p>
+          <button id="saveProfileChanges">Simpan Perubahan</button>
+        </div>
+        <!-- Status Live Diskusi (Status yang terpasang + kolom posting status) -->
+        <div id="statusFeedSection">
+          <div id="statusFeed"></div>
+          <textarea id="statusInput" placeholder="Tulis status diskusi..."></textarea>
+          <button id="postStatusBtn">Pasang Status</button>
         </div>
       </div>
     </div>
 
-    <script>
-      // Fungsi penyimpanan dan pemuatan data menggunakan localStorage
-      function saveUserData(data) {
-        localStorage.setItem("user_data", JSON.stringify(data));
-      }
-      function loadUserData() {
-        const data = localStorage.getItem("user_data");
-        return data ? JSON.parse(data) : null;
-      }
+    <!-- Kode JavaScript -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+      import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+      import { getDatabase, ref, push, onChildAdded, set, onValue } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
-      // Elemen UI
-      const ball = document.getElementById("floatingBall");
-      const loginForm = document.getElementById("loginForm");
-      const registrationForm = document.getElementById("registrationForm");
-      const closeLoginForm = document.getElementById("closeLoginForm");
-      const closeRegistrationForm = document.getElementById("closeRegistrationForm");
-      const loginButton = document.getElementById("loginButton");
-      const registerButton = document.getElementById("registerButton");
-      const switchToReg = document.getElementById("switchToReg");
+      // Konfigurasi Firebase, ganti dengan data proyek Firebase kamu.
+      const firebaseConfig = {
+        apiKey: "AIzaSyAC4bxcSRsj866cYfpyGyStg4-71Mfg7iQ",
+        authDomain: "forum-aras-atas.firebaseapp.com",
+        databaseURL: "https://forum-aras-atas-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "forum-aras-atas",
+        storageBucket: "forum-aras-atas.appspot.com",
+        messagingSenderId: "646009716521",
+        appId: "1:646009716521:web:a39976d16b4292a9ad0138",
+        measurementId: "G-PR5HGGZ7PL"
+      };
 
-      const loginEmailInput = document.getElementById("loginEmail");
-      const loginPasswordInput = document.getElementById("loginPassword");
+      // Inisialisasi Firebase
+      const fbApp = initializeApp(firebaseConfig);
+      const auth = getAuth(fbApp);
+      const db = getDatabase(fbApp);
 
-      const regFirstNameInput = document.getElementById("regFirstName");
-      const regLastNameInput = document.getElementById("regLastName");
-      const regEmailInput = document.getElementById("regEmail");
-      const regPasswordInput = document.getElementById("regPassword");
-      const regConfirmPasswordInput = document.getElementById("regConfirmPassword");
-      const regUserPhotoInput = document.getElementById("regUserPhoto");
-
-      const toggleIcons = document.querySelectorAll(".toggle-password");
-
-      const popupInner = document.getElementById("popupInner");
-      const openExternalBtn = document.getElementById("openExternal");
-      const notificationPopup = document.getElementById("notificationPopup");
-      const closeNotification = document.getElementById("closeNotification");
-      const notificationLoginBtn = document.getElementById("notificationLoginBtn");
-
-      const loginLoading = document.getElementById("loginLoading");
-      const registerLoading = document.getElementById("registerLoading");
-
-      const profilePopup = document.getElementById("profilePopup");
-
-      let isDragging = false, offsetX, offsetY;
-      let menuVisible = true;
-      let menuElements = [];
-      let rotationTimer = null;
-      let rotationOffset = 0;
-
-      function validateEmail(email) {
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return pattern.test(email);
-      }
-      function validatePassword(password) {
-        const pattern = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
-        return pattern.test(password);
-      }
-      function showError(inputElem, message) {
-        inputElem.style.border = "2px solid red";
-        console.log(message);
-      }
-      function clearError(inputElem) {
-        inputElem.style.border = "1px solid transparent";
-      }
-      toggleIcons.forEach(icon => {
-        icon.addEventListener("click", function() {
-          const targetId = this.dataset.target;
-          togglePassword(targetId, this);
-        });
-      });
-      function togglePassword(targetId, icon) {
-        const input = document.getElementById(targetId);
-        if (input.type === "password") {
-          input.type = "text";
-          icon.textContent = "x";
-        } else {
-          input.type = "password";
-          icon.textContent = "o";
-        }
-      }
-
-      // Update bola pintasan dengan data user
-      function updateBall(userData) {
-        if (userData && userData.firstName && userData.photoURL) {
-          ball.innerHTML = `<img src="${userData.photoURL}" alt="Profile" style="width:100%; height:100%; border-radius:50%; border: 3px solid rgba(0,255,0,0.3);">`;
-        } else if (userData && userData.firstName) {
-          ball.innerHTML = `<div style="border: 3px solid rgba(0,0,255,0.3); border-radius:50%; padding:10px;">${userData.firstName}</div>`;
-        } else {
-          ball.innerHTML = "+";
-        }
-        ball.dataset.loggedIn = "true";
-        createMenu();
-      }
-      function resetBall() {
-        ball.innerHTML = "+";
-        ball.dataset.loggedIn = "false";
-      }
-
-      // Saat halaman dimuat, jika data user sudah tersimpan, update bola
-      document.addEventListener("DOMContentLoaded", () => {
-        const data = loadUserData();
-        if (data) { updateBall(data); }
-      });
-
-      // Gerakan bola (sederhana)
-      function updatePosition(x, y) {
-        ball.style.left = `${x}px`;
-        ball.style.top = `${y}px`;
-      }
-      function onMouseMove(e) {
-        if (!isDragging) return;
-        const x = e.clientX - offsetX;
-        const y = e.clientY - offsetY;
-        updatePosition(x, y);
-      }
-      function onTouchMove(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const touch = e.touches[0];
-        const x = touch.clientX - offsetX;
-        const y = touch.clientY - offsetY;
-        updatePosition(x, y);
-      }
-      ball.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        offsetX = e.clientX - ball.getBoundingClientRect().left;
-        offsetY = e.clientY - ball.getBoundingClientRect().top;
-        document.addEventListener("mousemove", onMouseMove);
-      });
-      ball.addEventListener("touchstart", (e) => {
-        isDragging = true;
-        const touch = e.touches[0];
-        offsetX = touch.clientX - ball.getBoundingClientRect().left;
-        offsetY = touch.clientY - ball.getBoundingClientRect().top;
-        document.addEventListener("touchmove", onTouchMove, { passive: false });
-      });
-      document.addEventListener("mouseup", () => { isDragging = false; });
-      document.addEventListener("touchend", () => { isDragging = false; });
-
-      // Klik bola: jika sudah login, tampilkan menu; jika tidak, tampilkan popup notifikasi
-      ball.addEventListener("click", () => {
-        const data = loadUserData();
-        if (data) { updateBall(data); createMenu(); }
-        else { notificationPopup.style.display = "block"; }
-      });
-      closeNotification.addEventListener("click", () => { notificationPopup.style.display = "none"; });
-      notificationLoginBtn.addEventListener("click", () => {
-        notificationPopup.style.display = "none";
-        loginForm.style.display = "block";
-      });
-      switchToReg.addEventListener("click", () => {
-        loginForm.style.display = "none";
-        registrationForm.style.display = "block";
-      });
-
-      // Pembuatan menu-menu dinamis
-      function createMenu() {
-        removeMenu();
-        const menuSize = 50;
-        const halfMenuSize = menuSize / 2;
-        const menuItems = [
-          { url: "/", icon: "https://img.icons8.com/?size=100&id=4WzzlhYcikZ8&format=png&color=000000", name: "Home" },
-          { url: "#", icon: "https://img.icons8.com/?size=100&id=iqSCJ5UwsKH-&format=png&color=000000", name: "Profile" },
-          { url: "https://www.arasatas.com/", icon: "https://img.icons8.com/?size=100&id=112158&format=png&color=000000", name: "About" },
-          { url: "#", icon: "https://img.icons8.com/?size=100&id=91103&format=png&color=000000", name: "Logout" },
-          { url: "https://www.arasatas.com/p/live-diskusi-aras-atas.html", icon: "https://img.icons8.com/?size=100&id=S6ym80WwHadr&format=png&color=000000", name: "Chatting" },
-          { url: "https://www.arasatas.com/p/aras-atas-generator-quotes.html", icon: "https://img.icons8.com/?size=100&id=LVB8kCgWT95b&format=png&color=000000", name: "Quotes" },
-          { url: "https://www.arasatas.com/2025/03/alat-membuat-infografis-gratis.html", icon: "https://img.icons8.com/?size=100&id=124197&format=png&color=000000", name: "Infografis" },
-          { url: "/", icon: "https://img.icons8.com/?size=100&id=113848&format=png&color=000000", name: "Tools" },
-          { url: "kamus", icon: "https://img.icons8.com/?size=100&id=LGOY4KAmjR0K&format=png&color=000000", name: "Kamus" }
-        ];
-        const radius = 80;
-        const ballRect = ball.getBoundingClientRect();
-        const ballCenterX = ballRect.left + ballRect.width / 2;
-        const ballCenterY = ballRect.top + ballRect.height / 2;
-        menuItems.forEach((item, index) => {
-          const baseAngle = (index / menuItems.length) * (2 * Math.PI);
-          const menu = document.createElement("div");
-          menu.classList.add("floating-menu");
-          menu.dataset.baseAngle = baseAngle;
-          menu.innerHTML = `
-            <a href="${item.url}">
-              <img src="${item.icon}" alt="Icon">
-              <span class="menu-text">${item.name}</span>
-            </a>
-          `;
-          document.body.appendChild(menu);
-          menuElements.push(menu);
-          const anchor = menu.querySelector("a");
-          anchor.addEventListener("click", function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            if(item.name === "Kamus") { openKamusPopup(); }
-            else if(item.name === "Logout") { logoutUser(); }
-            else if(item.name === "Home") { window.location.href = "/"; }
-            else if(item.name === "Profile") { openProfilePopup(); }
-            else { openPopup(item.url); }
-          });
-        });
-        updateMenuPositions();
-      }
-      function updateMenuPositions() {
-        if (!menuElements.length) return;
-        const menuSize = 50;
-        const halfMenuSize = menuSize / 2;
-        const radius = 80;
-        const ballRect = ball.getBoundingClientRect();
-        const ballCenterX = ballRect.left + ballRect.width / 2;
-        const ballCenterY = ballRect.top + ballRect.height / 2;
-        menuElements.forEach(menu => {
-          const baseAngle = parseFloat(menu.dataset.baseAngle);
-          const newAngle = baseAngle + rotationOffset;
-          const x = ballCenterX + radius * Math.cos(newAngle) - halfMenuSize;
-          const y = ballCenterY + radius * Math.sin(newAngle) - halfMenuSize;
-          menu.style.left = `${x}px`;
-          menu.style.top = `${y}px`;
-        });
-      }
-      function startRotation() {
-        if (rotationTimer) return;
-        rotationTimer = setInterval(() => {
-          rotationOffset += 0.05;
-          updateMenuPositions();
-        }, 30);
-      }
-      function stopRotation() {
-        if (rotationTimer) {
-          clearInterval(rotationTimer);
-          rotationTimer = null;
-        }
-      }
-      function removeMenu() {
-        menuElements.forEach(menu => menu.remove());
-        menuElements = [];
-        rotationOffset = 0;
-      }
-
-      closeLoginForm.addEventListener("click", () => { loginForm.style.display = "none"; });
-      closeRegistrationForm.addEventListener("click", () => { registrationForm.style.display = "none"; });
-
-      loginButton.addEventListener("click", () => {
-        const email = loginEmailInput.value.trim();
-        const password = loginPasswordInput.value.trim();
-        let valid = true;
-        if (!validateEmail(email)) { showError(loginEmailInput, "Email tidak valid"); valid = false; }
-        else { clearError(loginEmailInput); }
-        if (!validatePassword(password)) { showError(loginPasswordInput, "Password harus minimal 6 karakter, 1 angka, 1 huruf kapital"); valid = false; }
-        else { clearError(loginPasswordInput); }
-        if (!valid) return;
-        loginLoading.style.display = "block";
-        const data = loadUserData();
-        if (data && data.email === email && data.password === password) {
-          updateBall(data);
-          loginForm.style.display = "none";
-        } else {
-          alert("Email atau password salah.");
-        }
-        loginLoading.style.display = "none";
-      });
-
-      registerButton.addEventListener("click", async () => {
-        const firstName = regFirstNameInput.value.trim();
-        const lastName = regLastNameInput.value.trim();
-        const email = regEmailInput.value.trim();
-        const password = regPasswordInput.value.trim();
-        const confirmPassword = regConfirmPasswordInput.value.trim();
-        const photoFile = regUserPhotoInput.files[0];
-        let valid = true;
-        if (firstName === "") { showError(regFirstNameInput, "Harus diisi"); valid = false; } else { clearError(regFirstNameInput); }
-        if (lastName === "") { showError(regLastNameInput, "Harus diisi"); valid = false; } else { clearError(regLastNameInput); }
-        if (!validateEmail(email)) { showError(regEmailInput, "Email tidak valid"); valid = false; } else { clearError(regEmailInput); }
-        if (!validatePassword(password)) { showError(regPasswordInput, "Password harus minimal 6 karakter, 1 angka, 1 huruf kapital"); valid = false; } else { clearError(regPasswordInput); }
-        if (password !== confirmPassword) { showError(regConfirmPasswordInput, "Password tidak sama"); valid = false; } else { clearError(regConfirmPasswordInput); }
-        if (photoFile && photoFile.size > 500 * 1024) { console.error("Ukuran foto melebihi 500kb."); valid = false; }
-        if (!valid) return;
-        registerLoading.style.display = "block";
-        let photoURL = "";
-        if (photoFile) {
-          photoURL = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = e => resolve(e.target.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(photoFile);
-          });
-        }
-        const userData = {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-          photoURL: photoURL
-        };
-        saveUserData(userData);
-        updateBall(userData);
-        registrationForm.style.display = "none";
-        registerLoading.style.display = "none";
-      });
-
-      function openPopup(url) {
-        const popupModal = document.getElementById("popupModal");
-        const popupIframe = document.getElementById("popupIframe");
-        popupIframe.src = url;
-        popupModal.style.display = "flex";
-      }
-      document.getElementById("closePopup").addEventListener("click", () => {
-        const popupModal = document.getElementById("popupModal");
-        popupModal.style.display = "none";
-        document.getElementById("popupIframe").src = "";
-      });
-      function openKamusPopup() {
-        document.getElementById("kamusPopup").style.display = "flex";
-      }
-      document.getElementById("closeKamusPopup").addEventListener("click", () => {
-        document.getElementById("kamusPopup").style.display = "none";
-        document.getElementById("kamusResult").innerHTML = "";
-        document.getElementById("kamusSource").innerHTML = "";
-      });
-      document.getElementById("cariKata").addEventListener("click", () => {
-        const kata = document.getElementById("kataCari").value.trim();
-        if (kata === "") {
-          console.error("Silakan masukkan kata yang ingin dicari.");
-          return;
-        }
-        searchKamus(kata);
-      });
-      function searchKamus(keyword) {
-        const resultDiv = document.getElementById("kamusResult");
-        const sourceDiv = document.getElementById("kamusSource");
-        resultDiv.innerHTML = "Mencari definisi...";
-        sourceDiv.innerHTML = "";
-        const wikiURL = `https://id.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${encodeURIComponent(keyword)}&origin=*`;
-        fetch(wikiURL)
-          .then(response => {
-            if (!response.ok) { throw new Error("Gagal mendapatkan data dari Wikipedia"); }
-            return response.json();
-          })
-          .then(data => {
-            const pages = data.query.pages;
-            const page = pages[Object.keys(pages)[0]];
-            const wikiExtract = page && page.extract ? page.extract : "Definisi tidak ditemukan di Wikipedia.";
-            resultDiv.innerHTML = `<h4>Wikipedia</h4>${wikiExtract}`;
-            sourceDiv.innerHTML = `Sumber: Wikipedia (<a href="https://id.wikipedia.org" target="_blank">https://id.wikipedia.org</a>)`;
-          })
-          .catch(error => {
-            console.error("Error:", error.message);
-            resultDiv.innerHTML = `<span style="color:red;">Terjadi kesalahan: ${error.message}</span>`;
+      // Fungsi toggle visibilitas password
+      function togglePasswordVisibility(inputId, toggleId) {
+          const input = document.getElementById(inputId);
+          const toggle = document.getElementById(toggleId);
+          toggle.addEventListener("click", function() {
+              if(input.type === "password") {
+                  input.type = "text";
+                  toggle.textContent = "x";
+              } else {
+                  input.type = "password";
+                  toggle.textContent = "o";
+              }
           });
       }
-      popupInner.addEventListener("scroll", () => {
-        if (popupInner.scrollTop + popupInner.clientHeight >= popupInner.scrollHeight * 0.9) {
-          openExternalBtn.style.display = "block";
-        } else {
-          openExternalBtn.style.display = "none";
-        }
-      });
-      openExternalBtn.addEventListener("click", () => {
-        const popupIframe = document.getElementById("popupIframe");
-        if (popupIframe.src) { window.open(popupIframe.src, "_blank"); }
-      });
-      function logoutUser() {
-        if (confirm("Apakah Anda yakin ingin keluar?")) {
-          localStorage.removeItem("user_data");
-          resetBall();
-          removeMenu();
-          menuVisible = false;
-          alert("Anda telah logout.");
-        }
+
+      // Fungsi untuk memposting status ke Firebase
+      function postStatus(statusText) {
+          const statusRef = ref(db, 'statuses');
+          push(statusRef, {
+              text: statusText,
+              timestamp: Date.now(),
+              user: localStorage.getItem("userEmail") || "anonymous"
+          });
       }
-      function openProfilePopup() {
-        const data = loadUserData();
-        if (data) {
-          document.getElementById("profileName").textContent = data.firstName + " " + data.lastName;
-          document.getElementById("profileEmail").textContent = data.email;
-          if (data.photoURL) {
-            document.getElementById("profilePhoto").innerHTML = `<img src="${data.photoURL}" alt="Profile" style="width:80px; height:80px; border-radius:50%; object-fit: cover;">`;
-          } else {
-            document.getElementById("profilePhoto").innerHTML = `<div style="width:80px; height:80px; border-radius:50%; background: #ccc; display: flex; align-items: center; justify-content: center;">${data.firstName.charAt(0)}</div>`;
+
+      // Fungsi untuk menampilkan status dan komentar secara realtime
+      function listenStatusUpdates() {
+          const statusFeed = document.getElementById("statusFeed");
+          const statusRef = ref(db, 'statuses');
+          onChildAdded(statusRef, snapshot => {
+              const statusData = snapshot.val();
+              const statusDiv = document.createElement("div");
+              statusDiv.classList.add("status-item");
+              statusDiv.innerHTML = `<strong>${statusData.user}</strong>: ${statusData.text}
+              <div class="comment-section" id="comments-${snapshot.key}"></div>
+              <input type="text" class="comment-input" placeholder="Tulis komentar..." id="input-${snapshot.key}">
+              <button class="post-comment-btn" onclick="postComment('${snapshot.key}')">Post Komentar</button>`;
+              statusFeed.prepend(statusDiv);
+
+              // Listener untuk komentar secara realtime pada status ini
+              const commentsRef = ref(db, `statuses/${snapshot.key}/comments`);
+              onChildAdded(commentsRef, commentSnapshot => {
+                  const commentData = commentSnapshot.val();
+                  const commentDiv = document.createElement("div");
+                  commentDiv.classList.add("comment-item");
+                  commentDiv.textContent = `${commentData.user}: ${commentData.text}`;
+                  const commentSection = document.getElementById("comments-" + snapshot.key);
+                  commentSection.appendChild(commentDiv);
+              });
+          });
+      }
+
+      // Fungsi untuk memposting komentar (minimal)
+      window.postComment = function(statusKey) {
+          const commentInput = document.getElementById("input-" + statusKey);
+          const commentText = commentInput.value.trim();
+          if(commentText === "") return;
+          const commentRef = ref(db, `statuses/${statusKey}/comments`);
+          push(commentRef, {
+              text: commentText,
+              timestamp: Date.now(),
+              user: localStorage.getItem("userEmail") || "anonymous"
+          });
+          commentInput.value = "";
+      }
+
+      // Fungsi untuk menyimpan data registrasi ke Firebase
+      function saveUserData(uid, name, email, password) {
+          set(ref(db, 'users/' + uid), {
+              name: name,
+              email: email,
+              password: password
+          });
+      }
+
+      // Fungsi untuk mengambil data user dari Firebase secara realtime
+      function listenUserData(uid) {
+          const userRef = ref(db, 'users/' + uid);
+          onValue(userRef, snapshot => {
+              const data = snapshot.val();
+              if(data) {
+                  // Update input nama agar bisa diedit
+                  const nameInput = document.getElementById("profileNameInput");
+                  if(nameInput) {
+                      nameInput.value = data.name;
+                  }
+                  document.getElementById("profileEmail").textContent = data.email;
+                  // Set nilai password pada input password
+                  const pwdInput = document.getElementById("profilePasswordInput");
+                  if(pwdInput) {
+                      pwdInput.value = data.password;
+                  }
+                  // Update nama depan pada bola pintasan (asumsikan nama depan adalah kata pertama)
+                  const firstName = data.name.split(" ")[0];
+                  const ball = document.getElementById("floatingBall");
+                  ball.textContent = firstName;
+              }
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+          const ball = document.getElementById("floatingBall");
+          const loginForm = document.getElementById("loginForm");
+          const closeLoginForm = document.getElementById("closeLoginForm");
+          const notificationPopup = document.getElementById("notificationPopup");
+          const closeNotification = document.getElementById("closeNotification");
+          const notificationLoginBtn = document.getElementById("notificationLoginBtn");
+          const postStatusBtn = document.getElementById("postStatusBtn");
+          const statusInput = document.getElementById("statusInput");
+
+          // Pasang event listener tombol close pada form login/registrasi
+          closeLoginForm.addEventListener("click", function () {
+              console.log("Tombol close form di-klik");
+              loginForm.style.display = "none";
+          });
+
+          // Toggle tab form
+          const loginTab = document.getElementById("loginTab");
+          const registerTab = document.getElementById("registerTab");
+          const loginSection = document.getElementById("loginSection");
+          const registerSection = document.getElementById("registerSection");
+
+          loginTab.addEventListener("click", () => {
+              loginTab.classList.add("active");
+              registerTab.classList.remove("active");
+              loginSection.style.display = "block";
+              registerSection.style.display = "none";
+          });
+
+          registerTab.addEventListener("click", () => {
+              registerTab.classList.add("active");
+              loginTab.classList.remove("active");
+              loginSection.style.display = "none";
+              registerSection.style.display = "block";
+          });
+
+          // Inisialisasi toggle password untuk form login dan registrasi
+          togglePasswordVisibility("loginPassword", "toggleLoginPassword");
+          togglePasswordVisibility("regPassword", "toggleRegPassword");
+          togglePasswordVisibility("regPasswordVerify", "toggleRegPasswordVerify");
+
+          // Variabel untuk drag dan menu rotasi.
+          let isDragging = false, offsetX, offsetY, menuVisible = false;
+          let menuElements = [];
+          let rotationTimer = null;
+          let rotationOffset = 0;
+
+          // Fungsi untuk mengecek status login
+          function checkLoginStatus() {
+              if (localStorage.getItem("userEmail") && localStorage.getItem("uid")) {
+                  const uid = localStorage.getItem("uid");
+                  if(localStorage.getItem("userPhoto")) {
+                    ball.style.backgroundImage = `url(${localStorage.getItem("userPhoto")})`;
+                    ball.style.backgroundSize = "cover";
+                    ball.style.backgroundPosition = "center";
+                  } else {
+                    ball.style.backgroundImage = "none";
+                  }
+                  // Nama diatur oleh listener realtime dari Firebase
+                  ball.dataset.loggedIn = "true";
+                  // Mendengarkan data user secara realtime
+                  listenUserData(uid);
+                  if ("Notification" in window) {
+                      if (Notification.permission === "granted") {
+                          new Notification("Selamat datang kembali, " + localStorage.getItem("userEmail"), {
+                              body: "Anda telah login."
+                          });
+                      } else if (Notification.permission !== "denied") {
+                          Notification.requestPermission().then(permission => {
+                              if (permission === "granted") {
+                                  new Notification("Selamat datang kembali, " + localStorage.getItem("userEmail"), {
+                                      body: "Anda telah login."
+                                  });
+                              }
+                          });
+                      }
+                  }
+              } else {
+                  ball.style.backgroundImage = "";
+                  ball.textContent = "Aras Atas";
+                  ball.dataset.loggedIn = "false";
+              }
           }
-          document.getElementById("passwordText").textContent = "********";
-          document.getElementById("togglePassword").textContent = "o";
-          profilePopup.style.display = "flex";
-        } else {
-          alert("Data profil tidak ditemukan.");
-        }
-      }
-      function openProfileMenu() {
-        openProfilePopup();
-      }
-      document.getElementById("closeProfilePopup").addEventListener("click", () => { profilePopup.style.display = "none"; });
+
+          // Fungsi untuk mengupdate posisi bola
+          function updatePosition(x, y) {
+              ball.style.left = `${x}px`;
+              ball.style.top = `${y}px`;
+          }
+
+          // Fungsi untuk menangani pergerakan mouse
+          function onMouseMove(e) {
+              if (!isDragging) return;
+              let x = e.clientX - offsetX;
+              let y = e.clientY - offsetY;
+              updatePosition(x, y);
+          }
+
+          // Fungsi untuk menangani pergerakan sentuhan
+          function onTouchMove(e) {
+              if (!isDragging) return;
+              e.preventDefault();
+              let touch = e.touches[0];
+              let x = touch.clientX - offsetX;
+              let y = touch.clientY - offsetY;
+              updatePosition(x, y);
+          }
+
+          ball.addEventListener("mousedown", (e) => {
+              isDragging = true;
+              offsetX = e.clientX - ball.getBoundingClientRect().left;
+              offsetY = e.clientY - ball.getBoundingClientRect().top;
+              document.addEventListener("mousemove", onMouseMove);
+              if (ball.dataset.loggedIn === "true" && menuVisible) startRotation();
+          });
+
+          ball.addEventListener("touchstart", (e) => {
+              isDragging = true;
+              let touch = e.touches[0];
+              offsetX = touch.clientX - ball.getBoundingClientRect().left;
+              offsetY = touch.clientY - ball.getBoundingClientRect().top;
+              document.addEventListener("touchmove", onTouchMove, { passive: false });
+              if (ball.dataset.loggedIn === "true" && menuVisible) startRotation();
+          });
+
+          document.addEventListener("mouseup", () => {
+              isDragging = false;
+              stopRotation();
+          });
+          document.addEventListener("touchend", () => {
+              isDragging = false;
+              stopRotation();
+          });
+
+          ball.addEventListener("click", () => {
+              if (ball.dataset.loggedIn === "true") {
+                  if (!menuVisible) {
+                      createMenu();
+                  } else {
+                      removeMenu();
+                  }
+                  menuVisible = !menuVisible;
+              } else {
+                  notificationPopup.style.display = "block";
+              }
+          });
+
+          closeNotification.addEventListener("click", () => {
+              notificationPopup.style.display = "none";
+          });
+
+          notificationLoginBtn.addEventListener("click", () => {
+              notificationPopup.style.display = "none";
+              loginForm.style.display = "block";
+          });
+
+          // Event listener untuk posting status
+          postStatusBtn.addEventListener("click", function() {
+              const statusText = statusInput.value.trim();
+              if(statusText === "") return;
+              postStatus(statusText);
+              statusInput.value = "";
+          });
+
+          // Mulai mendengarkan update status realtime
+          listenStatusUpdates();
+
+          // Fungsi untuk membuat menu dinamis di sekitar bola
+          function createMenu() {
+              removeMenu();
+              const menuSize = 50;
+              const halfMenuSize = menuSize / 2;
+              const menuItems = [
+                  { name: "Home", url: "/", icon: "https://img.icons8.com/?size=100&id=4WzzlhYcikZ8&format=png&color=000000" },
+                  { name: "Profile", url: "#", icon: "https://img.icons8.com/?size=100&id=c8SsrDOfQgn3&format=png&color=000000" },
+                  { name: "About", url: "https://www.arasatas.com/", icon: "https://img.icons8.com/?size=100&id=112158&format=png&color=000000" },
+                  { name: "Logout", url: "#", icon: "https://img.icons8.com/?size=100&id=91103&format=png&color=000000" },
+                  { name: "Chatting", url: "https://www.arasatas.com/p/live-diskusi-aras-atas.html", icon: "https://img.icons8.com/?size=100&id=S6ym80WwHadr&format=png&color=000000" },
+                  { name: "Quotes", url: "https://www.arasatas.com/p/aras-atas-generator-quotes.html", icon: "https://img.icons8.com/?size=100&id=LVB8kCgWT95b&format=png&color=000000" },
+                  { name: "Infografis", url: "https://www.arasatas.com/2025/03/alat-membuat-infografis-gratis.html", icon: "https://img.icons8.com/?size=100&id=124197&format=png&color=000000" },
+                  { name: "Tools", url: "/", icon: "https://img.icons8.com/?size=100&id=113848&format=png&color=000000" },
+                  { name: "Kamus", url: "kamus", icon: "https://img.icons8.com/?size=100&id=LGOY4KAmjR0K&format=png&color=000000" }
+              ];
+              const radius = 80;
+              const ballRect = ball.getBoundingClientRect();
+              const ballCenterX = ballRect.left + ballRect.width / 2;
+              const ballCenterY = ballRect.top + ballRect.height / 2;
+              
+              menuItems.forEach((item, index) => {
+                  const baseAngle = (index / menuItems.length) * (2 * Math.PI);
+                  const menu = document.createElement("div");
+                  menu.classList.add("floating-menu");
+                  menu.dataset.baseAngle = baseAngle;
+                  menu.innerHTML = `
+                      <a href="${item.url}">
+                          <img src="${item.icon}" alt="${item.name}">
+                          <span class="menu-text">${item.name}</span>
+                      </a>
+                  `;
+                  document.body.appendChild(menu);
+                  menuElements.push(menu);
+                  
+                  const anchor = menu.querySelector("a");
+                  if(item.name === "Profile") {
+                      // Tampilkan popup profil hanya jika pengguna sudah login
+                      anchor.addEventListener("click", function(event) {
+                          event.preventDefault();
+                          openProfilePopup();
+                      });
+                  } else if(item.name === "Logout") {
+                      anchor.addEventListener("click", function(event) {
+                          event.preventDefault();
+                          logoutUser();
+                      });
+                  } else if(item.name === "Home") {
+                      anchor.addEventListener("click", function(event) {
+                          event.preventDefault();
+                          window.location.href = "/";
+                      });
+                  } else if(item.name === "Kamus") {
+                      anchor.addEventListener("click", function(event) {
+                          event.preventDefault();
+                          openKamusPopup();
+                      });
+                  } else {
+                      anchor.addEventListener("click", function(event) {
+                          event.preventDefault();
+                          openPopup(item.url);
+                      });
+                  }
+              });
+              updateMenuPositions();
+          }
+
+          // Fungsi untuk mengatur posisi menu dinamis di sekitar bola
+          function updateMenuPositions() {
+              if (!menuElements.length) return;
+              const menuSize = 50;
+              const halfMenuSize = menuSize / 2;
+              const radius = 80;
+              const ballRect = ball.getBoundingClientRect();
+              const ballCenterX = ballRect.left + ballRect.width / 2;
+              const ballCenterY = ballRect.top + ballRect.height / 2;
+              
+              menuElements.forEach(menu => {
+                  const baseAngle = parseFloat(menu.dataset.baseAngle);
+                  const newAngle = baseAngle + rotationOffset;
+                  const x = ballCenterX + radius * Math.cos(newAngle) - halfMenuSize;
+                  const y = ballCenterY + radius * Math.sin(newAngle) - halfMenuSize;
+                  menu.style.left = `${x}px`;
+                  menu.style.top = `${y}px`;
+              });
+          }
+
+          // Fungsi untuk memulai rotasi menu
+          function startRotation() {
+              if (rotationTimer) return;
+              rotationTimer = setInterval(() => {
+                  rotationOffset += 0.05;
+                  updateMenuPositions();
+              }, 30);
+          }
+
+          // Fungsi untuk menghentikan rotasi menu
+          function stopRotation() {
+              if (rotationTimer) {
+                  clearInterval(rotationTimer);
+                  rotationTimer = null;
+              }
+          }
+
+          // Fungsi untuk menghapus menu dari DOM
+          function removeMenu() {
+              menuElements.forEach(menu => menu.remove());
+              menuElements = [];
+              rotationOffset = 0;
+          }
+
+          /* --- AUTENTIKASI EMAIL & PASSWORD --- */
+
+          document.getElementById("loginButton").addEventListener("click", function () {
+              const email = document.getElementById("loginEmail").value.trim();
+              const password = document.getElementById("loginPassword").value.trim();
+              if (!email || !password) {
+                  alert("Mohon lengkapi email dan password.");
+                  return;
+              }
+              signInWithEmailAndPassword(auth, email, password)
+                .then(userCredential => {
+                    localStorage.setItem("userEmail", email);
+                    localStorage.setItem("uid", userCredential.user.uid);
+                    loginForm.style.display = "none";
+                    checkLoginStatus();
+                })
+                .catch(error => {
+                    alert("Login gagal: " + error.message);
+                });
+          });
+
+          document.getElementById("registerButton").addEventListener("click", function () {
+              const firstName = document.getElementById("regFirstName").value.trim();
+              const lastName = document.getElementById("regLastName").value.trim();
+              const email = document.getElementById("regEmail").value.trim();
+              const password = document.getElementById("regPassword").value.trim();
+              const passwordVerify = document.getElementById("regPasswordVerify").value.trim();
+
+              if (!firstName || !lastName || !email || !password || !passwordVerify) {
+                  alert("Semua kolom harus diisi.");
+                  return;
+              }
+              if (password !== passwordVerify) {
+                  alert("Password dan verifikasi password tidak sama.");
+                  return;
+              }
+              createUserWithEmailAndPassword(auth, email, password)
+                .then(userCredential => {
+                    const uid = userCredential.user.uid;
+                    localStorage.setItem("userEmail", email);
+                    localStorage.setItem("uid", uid);
+                    // Simpan data registrasi gabungan ke Firebase
+                    const fullName = firstName + " " + lastName;
+                    saveUserData(uid, fullName, email, password);
+                    loginForm.style.display = "none";
+                    checkLoginStatus();
+                    alert("Registrasi berhasil. Silakan login kembali jika diperlukan.");
+                })
+                .catch(error => {
+                    alert("Registrasi gagal: " + error.message);
+                });
+          });
+
+          // Fungsi untuk membuka popup modal (default untuk menu selain profil)
+          function openPopup(url) {
+              const popupModal = document.getElementById("popupModal");
+              const popupIframe = document.getElementById("popupIframe");
+              popupIframe.src = url;
+              popupModal.style.display = "flex";
+          }
+
+          document.getElementById("closePopup").addEventListener("click", function(){
+              const popupModal = document.getElementById("popupModal");
+              popupModal.style.display = "none";
+              document.getElementById("popupIframe").src = "";
+          });
+
+          // Fungsi untuk membuka popup Kamus Ilmiah
+          function openKamusPopup() {
+              document.getElementById("kamusPopup").style.display = "flex";
+          }
+
+          document.getElementById("closeKamusPopup").addEventListener("click", function(){
+              document.getElementById("kamusPopup").style.display = "none";
+              document.getElementById("kamusResult").innerHTML = "";
+              document.getElementById("kamusSource").innerHTML = "";
+          });
+
+          document.getElementById("cariKata").addEventListener("click", function(){
+              const kata = document.getElementById("kataCari").value.trim();
+              if(kata === "") {
+                  alert("Silakan masukkan kata yang ingin dicari.");
+                  return;
+              }
+              searchKamus(kata);
+          });
+
+          function searchKamus(keyword) {
+              const resultDiv = document.getElementById("kamusResult");
+              const sourceDiv = document.getElementById("kamusSource");
+              resultDiv.innerHTML = "Mencari definisi...";
+              sourceDiv.innerHTML = "";
+              const wikiURL = `https://id.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${encodeURIComponent(keyword)}&origin=*`;
+              fetch(wikiURL)
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error("Gagal mendapatkan data dari Wikipedia");
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      let pages = data.query.pages;
+                      let page = pages[Object.keys(pages)[0]];
+                      let wikiExtract = page && page.extract ? page.extract : "Definisi tidak ditemukan di Wikipedia.";
+                      resultDiv.innerHTML = `<h4>Wikipedia</h4>${wikiExtract}`;
+                      sourceDiv.innerHTML = `Sumber: Wikipedia (<a href="https://id.wikipedia.org" target="_blank">https://id.wikipedia.org</a>)`;
+                  })
+                  .catch(error => {
+                      console.error("Error:", error);
+                      resultDiv.innerHTML = `<span style="color:red;">Terjadi kesalahan dalam pencarian: ${error.message}</span>`;
+                  });
+          }
+
+          // Toggle password di profil dengan konfirmasi
+          const toggleProfilePassword = document.getElementById("toggleProfilePassword");
+          toggleProfilePassword.addEventListener("click", function() {
+              const passwordSpan = document.getElementById("profilePassword");
+              const isVisible = passwordSpan.dataset.visible === "true";
+              if (!isVisible) {
+                  const input = prompt("Masukkan password Anda untuk menampilkan password:");
+                  if (input === passwordSpan.dataset.actual) {
+                      passwordSpan.textContent = passwordSpan.dataset.actual;
+                      passwordSpan.dataset.visible = "true";
+                      toggleProfilePassword.textContent = "x";
+                  } else {
+                      alert("Password salah. Akses ditolak.");
+                  }
+              } else {
+                  passwordSpan.textContent = "••••••";
+                  passwordSpan.dataset.visible = "false";
+                  toggleProfilePassword.textContent = "o";
+              }
+          });
+
+          function logoutUser() {
+              if (confirm("Apakah Anda yakin ingin keluar?")) {
+                  localStorage.removeItem("userEmail");
+                  localStorage.removeItem("uid");
+                  localStorage.removeItem("userPhoto");
+                  ball.style.backgroundImage = "";
+                  ball.textContent = "+";
+                  ball.dataset.loggedIn = "false";
+                  removeMenu();
+                  menuVisible = false;
+                  checkLoginStatus();
+              }
+          }
+          /* --- Fungsi Popup Profil (hanya untuk pemilik akun) --- */
+          function openProfilePopup() {
+              const uid = localStorage.getItem("uid");
+              if(!uid) {
+                  alert("Akses ditolak. Anda harus login terlebih dahulu.");
+                  return;
+              }
+              // Hanya pemilik akun yang dapat melihat container profil
+              document.getElementById("profilePopup").style.display = "flex";
+              // Tampilkan foto profil yang tersimpan di localStorage jika ada
+              if(localStorage.getItem("userPhoto")){
+                  const photo = document.getElementById("profilePhoto");
+                  photo.style.backgroundImage = `url(${localStorage.getItem("userPhoto")})`;
+                  photo.style.backgroundSize = "cover";
+                  photo.style.backgroundPosition = "center";
+              }
+          }
+
+          document.getElementById("closeProfilePopup").addEventListener("click", function(){
+              document.getElementById("profilePopup").style.display = "none";
+          });
+
+          // Event untuk ikon pensil edit foto
+          document.getElementById("editPhotoIcon").addEventListener("click", function(){
+              document.getElementById("uploadPhoto").click();
+          });
+
+          // Update foto profil dari file input
+          const uploadPhotoInput = document.getElementById("uploadPhoto");
+          uploadPhotoInput.addEventListener("change", function(e) {
+              const file = e.target.files[0];
+              if(file) {
+                  const reader = new FileReader();
+                  reader.onload = function(e) {
+                      const photoUrl = e.target.result;
+                      localStorage.setItem("userPhoto", photoUrl);
+                      // Perbarui tampilan foto di profil dan bola pintasan
+                      const profilePhoto = document.getElementById("profilePhoto");
+                      profilePhoto.style.backgroundImage = `url(${photoUrl})`;
+                      profilePhoto.style.backgroundSize = "cover";
+                      profilePhoto.style.backgroundPosition = "center";
+                      ball.style.backgroundImage = `url(${photoUrl})`;
+                      ball.style.backgroundSize = "cover";
+                      ball.style.backgroundPosition = "center";
+                  }
+                  reader.readAsDataURL(file);
+              }
+          });
+
+          // Tambahkan event listener untuk tombol "Simpan Perubahan" pada data profil
+          document.getElementById("saveProfileChanges").addEventListener("click", function(){
+              const newName = document.getElementById("profileNameInput").value.trim();
+              if(newName === ""){
+                  alert("Nama tidak boleh kosong");
+                  return;
+              }
+              const uid = localStorage.getItem("uid");
+              if(uid){
+                  // Dapatkan nilai email dan password yang sudah ada
+                  const email = document.getElementById("profileEmail").textContent;
+                  const password = document.getElementById("profilePasswordInput").value;
+                  // Update data pengguna di Firebase
+                  set(ref(db, 'users/' + uid), {
+                      name: newName,
+                      email: email,
+                      password: password
+                  }).then(() => {
+                      alert("Perubahan disimpan");
+                  }).catch(error => {
+                      alert("Gagal menyimpan perubahan: " + error.message);
+                  });
+              }
+          });
+
+          // Tambahkan event listener untuk toggle password di container profil
+          document.getElementById("toggleProfilePassword").addEventListener("click", function(){
+              const pwdInput = document.getElementById("profilePasswordInput");
+              if(pwdInput.type === "password"){
+                  // Minta konfirmasi password
+                  const userConfirmation = prompt("Masukkan password Anda untuk membuka:");
+                  if(userConfirmation === pwdInput.value){
+                      pwdInput.type = "text";
+                      this.textContent = "x";
+                  } else {
+                      alert("Password salah. Tidak dapat membuka.");
+                  }
+              } else {
+                  pwdInput.type = "password";
+                  this.textContent = "o";
+              }
+          });
+
+          /* --- Akhir Fungsi Popup Profil --- */
+
+          function startRotation() {
+              if (rotationTimer) return;
+              rotationTimer = setInterval(() => {
+                  rotationOffset += 0.05;
+                  updateMenuPositions();
+              }, 30);
+          }
+
+          function stopRotation() {
+              if (rotationTimer) {
+                  clearInterval(rotationTimer);
+                  rotationTimer = null;
+              }
+          }
+
+          function removeMenu() {
+              menuElements.forEach(menu => menu.remove());
+              menuElements = [];
+              rotationOffset = 0;
+          }
+
+          checkLoginStatus();
+      });
     </script>
-  </body>
-</html>
+  
+</!doctype>
